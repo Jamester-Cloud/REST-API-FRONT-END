@@ -15,24 +15,24 @@ export default function PrivateRoute ({component: Component, ...rest}){
         // Otherwise, redirect the user to /signin page
         <Route {...rest} render={props => (
                 sessionStorage.getItem("isLoggedIn") && sessionStorage.getItem('isLoggedInAdmin')
-                ?   <div>
+                ?   <> {/* React fragment */}
                         <Sidebar/>
                         <div className="main-panel" id="main-panel">
                             <NavigationAdmin/>
                             <Component {...props}/>
                             <Footer/>
                         </div>
-                    </div>
+                    </>
                 :sessionStorage.getItem("isLoggedIn") && sessionStorage.getItem('isLoggedInClient')
                 ?
-                    <div>
+                    <> {/* React fragment */}
                         <SidebarClient/>
                         <div className="main-panel" id="main-panel">
                             <NavigationAdmin/>
                             <Component {...props}/>
                             <Footer/>
                         </div>
-                    </div>
+                    </>
                 :( 
                     <Redirect to={{
                         pathname:"/login",
