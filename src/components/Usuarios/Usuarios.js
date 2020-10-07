@@ -17,6 +17,7 @@ export default class Usuarios extends Component {
       $("#producto").DataTable();
       console.log(res);
     }
+
     async deleteUser(id){
       await axios.delete('http://localhost:4000/api/usuarios',{data:{idUsuario:id}});
       this.refresh();
@@ -28,12 +29,44 @@ export default class Usuarios extends Component {
       this.refresh();
       this.Messages('Usuario Activado');
     }
+    //si el usuario es el actual en la session se debera cerrar la session y para que la vuelva a abrir
+    async changeProfile(id){
+        await axios.put('http://localhost:4000/api/usuarios/checkUser',{
+            idUsuario:id
+        }).then( async (res)=>{
+            // si la peticion al servidor estubo correcta.
+            if(res.statusText==='OK'){
+                // si el id del usuario coincide con el id el usuario actual (LogOut)
+                if(res.data === parseInt((sessionStorage.getItem('Usuario')))){
+                    await axios.get('http://localhost:4000/api/authentications/logout')
+                        .then((res)=>{
+                            if(res.statusText === "OK"){
+                                // eliminando informacion de la session
+                                sessionStorage.clear();
+                                //Redireccionando
+                                window.location.href = "/";
+                            }
+                        }).catch(err=>{
+                            console.log(err);
+
+                        })
+                }else{
+                    this.Messages('Se cambió de rol al usuario');
+                    this.refresh();
+                }
+            //Si no enviar un mensaje de error
+            }
+        }).catch(err=>{
+
+        })
+    }
 
     refresh(){
         this.destroyDataTables();
         this.getUsers();
     }
-    
+
+
     componentDidMount(){
         this.getUsers();
         this.Messages=Complements.bind(this);
@@ -53,9 +86,7 @@ export default class Usuarios extends Component {
                                 <Tippy content="Refrescar" placement="top" animation="shift-away">
                                     <button className="btn btn-icon btn-round btn-primary btn-md mr-3 " title="Refrescar" onClick={()=>this.refresh()}> 
                                         <i className="fa fa-sync-alt"></i>  
-                                        <p>
-                                            <span className="d-lg-none d-md-block">Refrescar</span>
-                                        </p> 
+                                         
                                     </button>
                                 </Tippy>
                                 <Tippy content="Usuarios Conectados" placement="top" animation="shift-away">
@@ -70,10 +101,10 @@ export default class Usuarios extends Component {
                                                 <th colSpan="1">Nombre</th>
                                                 <th colSpan="1">Apellido</th>
                                                 <th colSpan="1">Correo</th>
+                                                <th className="1">Perfil</th>
                                                 <th colSpan="1">Estatus</th> 
-                                                <th>Accion</th>  
-                                                                                           
-                                               
+                                                <th colSpan="1">Accion</th>
+                                                <th colSpan="1"></th>                  
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -83,6 +114,7 @@ export default class Usuarios extends Component {
                                                      <td>{users.nombrePersona}</td>
                                                      <td>{users.apellidoPersona}</td>
                                                      <td>{users.correoPersona}</td>
+                                                     <td>{users.perfil}</td>
                                                      
                                                     {users.estatusUsuario === "0" ? 
                                                      <td><p className="badge badge-danger"> Bloqueado</p></td>
@@ -94,7 +126,8 @@ export default class Usuarios extends Component {
                                                     ? <td><Tippy content="Editar" position="top" animation="fade"><button onClick={() => this.activeUser(users.idUsuario)} className='btn btn-icon btn-round btn-sm btn-success'><i className="fa fa-user-check"></i></button></Tippy></td>
                                                      
                                                     :<td><Tippy content="Bloquear" position="top" animation="fade"><button onClick={() => this.deleteUser(users.idUsuario)} className='btn btn-icon btn-round btn-sm btn-danger'><i className="fa fa-lock"></i></button></Tippy></td>
-                                                    }  
+                                                    }
+                                                    <td><Tippy content="Cambiar rol" position="top" animation="fade"><button onClick={() => this.changeProfile(users.idUsuario)} className='btn btn-icon btn-round btn-sm btn-info'><i className="fa fa-sync-alt"></i></button></Tippy></td>
                                                     
                                                 </tr>
                                             )

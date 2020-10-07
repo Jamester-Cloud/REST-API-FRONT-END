@@ -28,7 +28,6 @@ export default function CreateUser() {
                 console.log(res.data)
                 if(res.statusText==="OK"){
                     if(res.data.length === 0){
-                        
                         // si no se encuentra ningun registro
                         //cambiar a clase de exito
                        $(".Texto").addClass("text-success").removeClass('text-danger')
@@ -120,11 +119,11 @@ export default function CreateUser() {
                                     </div>
                                     <div className="form-group col-md-6">
 
-                                        <p>
+                                        <span>
                                             <div className="Texto text-center">
 
                                             </div>
-                                        </p>
+                                        </span>
                                         
                                     </div>
                                     <div className="form-group col-md-5">
