@@ -12,6 +12,8 @@ import axios from 'axios';
 import $, { error } from 'jquery';
 import Tippy from '@tippyjs/react';
 
+import PageError from '../../PageError';
+
 export default class DataTable extends Component {
       // State del componente
   state={
@@ -67,6 +69,16 @@ export default class DataTable extends Component {
                 </div> 
             );
         }
+
+        if(this.state.error){
+          return (
+              <div className="row justify-content-center fadeIn">
+                      <div className="col-bg-12">
+                          <PageError errors={this.state.error} />
+                      </div>
+              </div> 
+          );
+      }
         return (
             <div className="card-body">
               <div className="tab-content text-left">
