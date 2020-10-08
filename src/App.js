@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import {BrowserRouter as Router} from 'react-router-dom';
+import {BrowserRouter as Router, Route} from 'react-router-dom';
 //Tippy
 import 'tippy.js/dist/tippy.css'; // Estilos para el tooltip
 import 'tippy.js/animations/shift-away.css'; // Animaciones para el tooltip
@@ -44,6 +44,8 @@ import Problem from './components/Store/forms/Problem';
 import supportTicketAdmin from './components/Support/supportTicketAdmin';
 
 import supportTicketClient from './components/Support/supportTicketClient';
+
+import NotFound from './components/NotFound/NotFound';
 
 class App extends Component{
 
@@ -98,8 +100,10 @@ class App extends Component{
               <PrivateRoute exact path="/editUser/:id" component={FormEditUser}/> 
               {/*Modulo de reporte de pedidos*/}
               <PrivateRoute exact path="/Problem/:id" component={Problem}/>
-              
               <PrivateRoute exact path="/supportTicketAdmin" component={supportTicketAdmin}/>
+              {/*Not found route */}
+              <Route component={NotFound}></Route>
+              
 
       </Router>
       
@@ -123,6 +127,8 @@ class App extends Component{
               {/*Informacion del usuario*/}
               <PrivateRoute exact path="/userInfo" component={UserInfo}/>    
               <PrivateRoute exact path="/editUser/:id" component={FormEditUser}/>     
+              {/*Not found route*/}
+              <Route component={NotFound}></Route>
         </Router>
           
       )
