@@ -139,6 +139,8 @@ class App extends Component{
               <PublicRoute restricted={true} exact path="/" component={Inicio}/>
               <PublicRoute restricted={true} exact path="/user" component={CreateUser}/>
               <PublicRoute restricted={true} exact path="/login" component={loginUser}/>
+              {/*Not found route*/}
+              <Route component={NotFound}></Route>
         </Router>     
       )
     }
