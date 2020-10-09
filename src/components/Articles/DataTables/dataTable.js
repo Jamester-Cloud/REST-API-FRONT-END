@@ -10,6 +10,8 @@ import {Link} from 'react-router-dom'
 import Tippy from '@tippyjs/react';
 //Loading
 import PageLoading from '../../PageLoading';
+//Error
+import PageError from '../../PageError';
 
 export default class dataTable extends Component {
     // State del componente
@@ -67,7 +69,9 @@ export default class dataTable extends Component {
     }
 
     deleteArt = async(id) =>{
-      await axios.delete('http://localhost:4000/api/articulos', {data:{idArticulo:id}});
+      await axios.delete('http://localhost:4000/api/articulos', {data:{idArticulo:id}}).catch(err=>{
+        this.setState({error:err , loading:false });
+      })
       this.Messages('Articulo Eliminado');
       this.refrescarTabla()
     }
@@ -81,6 +85,16 @@ export default class dataTable extends Component {
                 </div> 
             );
         }
+
+        if(this.state.error){
+          return (
+              <div className="row justify-content-center fadeIn">
+                      <div className="col-bg-12">
+                          <PageError errors={this.state.error} />
+                      </div>
+              </div> 
+          );
+      }
         return (
             <div className="card-body">
               <div className="tab-content text-left">

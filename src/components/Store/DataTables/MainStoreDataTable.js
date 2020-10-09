@@ -4,6 +4,9 @@ import { Link } from 'react-router-dom';
 import Tippy from '@tippyjs/react';
 //Loading
 import PageLoading from '../../PageLoading';
+//error
+import PageError from '../../PageError';
+
 
 export default class MainStoreDataTable extends Component {
     state={
@@ -25,7 +28,7 @@ export default class MainStoreDataTable extends Component {
                     loading:false
                 })
             }).catch(err=>{
-                console.log(err);
+                this.setState({loading:false, error:err });
             })
         }, 3000);
 
@@ -43,6 +46,15 @@ export default class MainStoreDataTable extends Component {
                 </div> 
             );
         }
+        if(this.state.error){
+            return (
+                <div className="row justify-content-center fadeIn">
+                        <div className="col-bg-12">
+                            <PageError errors={this.state.error} />
+                        </div>
+                </div> 
+            );
+          }
         return (
             <div className="card-body">
                                 <hr/>

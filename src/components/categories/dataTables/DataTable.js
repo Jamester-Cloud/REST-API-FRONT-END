@@ -7,6 +7,8 @@ import Complements from '../../complementary/Complements';
 import refreshFunction from '../../complementary/refreshFunction';
 //Loading
 import PageLoading from '../../PageLoading';
+//error
+import PageError from '../../PageError';
 
 export default class DataTable extends Component {
   // State del componente
@@ -25,8 +27,8 @@ export default class DataTable extends Component {
             this.setState({categorias:res.data.categorias , loading:false});
             $("#producto").DataTable();
       }).catch(err=>{
-        console.log(err);
-      })
+        this.setState({loading:false, error:err });
+    })
         }, 3000);
     }
     // Evento on change que cambia los selects
@@ -43,10 +45,11 @@ export default class DataTable extends Component {
 
     deleteCrt = async(id) =>{
 
-      await axios.delete('http://localhost:4000/api/categorias', {data:{idCategoria:id}});
+      await axios.delete('http://localhost:4000/api/categorias', {data:{idCategoria:id}}).catch(err=>{
+        this.setState({loading:false, error:err });
+      })
       this.refresh();
       this.Messages('Categoria Eliminada');
-
     }
 
     render() {
@@ -58,6 +61,16 @@ export default class DataTable extends Component {
                         </div>
                 </div> 
             );
+        }
+
+        if(this.state.error){
+          return (
+              <div className="row justify-content-center fadeIn">
+                      <div className="col-bg-12">
+                          <PageError errors={this.state.error} />
+                      </div>
+              </div> 
+          );
         }
 
         return (

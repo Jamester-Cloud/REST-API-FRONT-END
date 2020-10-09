@@ -7,6 +7,8 @@ import $ from 'jquery';
 
 //Loading
 import PageLoading from '../../PageLoading';
+//Error
+import PageError from '../../PageError';
 
 import Tippy from '@tippyjs/react';
 
@@ -39,7 +41,7 @@ export default class DataTablesClient extends Component {
                     $("#producto").DataTable();
                 }
             }).catch(err=>{
-                console.log(err);
+                this.setState({loading:false, error:err });
             })
         }, 3000);
     }
@@ -54,7 +56,7 @@ export default class DataTablesClient extends Component {
                 
             }
         }).catch(err=>{
-            console.log(err);
+            this.setState({loading:false, error:err });
         })
 
     }
@@ -70,6 +72,16 @@ export default class DataTablesClient extends Component {
                 <div className="row justify-content-center fadeIn">
                         <div className="col-bg-12">
                             <PageLoading />
+                        </div>
+                </div> 
+            );
+        }
+
+        if(this.state.error){
+            return (
+                <div className="row justify-content-center fadeIn">
+                        <div className="col-bg-12">
+                            <PageError errors={this.state.error} />
                         </div>
                 </div> 
             );

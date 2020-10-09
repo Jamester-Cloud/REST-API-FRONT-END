@@ -1,12 +1,15 @@
 import React, { Component } from 'react'
-
+//Tooltips
 import Tippy from '@tippyjs/react';
-
+//Form 
 import Form from '../forms/Form';
-
+//Axios 
 import axios from 'axios';
 //Loading
 import PageLoading from '../../PageLoading';
+//Errors
+import PageError from '../../PageError';
+
 
 import $ from 'jquery';
 import Complements from '../../complementary/Complements';
@@ -52,8 +55,7 @@ export default class ClientCartData extends Component {
                 this.Messages("Parece que no tienes productos ahora mismo. Agrega para visualizar");
             }
         }).catch(err=>{
-            this.Messages("Error de conexion..Intenta en unos segundos")
-            console.log(err);
+            this.setState({loading:false, error:err });
         })
         }, 3000);
     }
@@ -79,6 +81,8 @@ export default class ClientCartData extends Component {
                 this.Messages("Articulo devuelto");
                 this.refreshButton();
             }
+        }).catch(err=>{
+            this.setState({loading:false, error:err });
         })
     }
     
@@ -92,6 +96,16 @@ export default class ClientCartData extends Component {
                 </div> 
             );
         }
+
+        if(this.state.error){
+            return (
+                <div className="row justify-content-center fadeIn">
+                        <div className="col-bg-12">
+                            <PageError errors={this.state.error} />
+                        </div>
+                </div> 
+            );
+          }
         return (   
             <div className="card-body">
                   <div className="tab-content text-left">

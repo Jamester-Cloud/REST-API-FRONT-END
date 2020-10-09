@@ -2,8 +2,10 @@ import React, { Component } from 'react'
 import axios from 'axios';
 import {format}from 'timeago.js';
 import Swal from 'sweetalert2'; 
+//Loading
 import PageLoading from '../../PageLoading';
-
+//Errors
+import PageError from '../../PageError';
 //Funciones varias
 import fechaES from '../../complementary/fechaFormat';
 import { Link} from 'react-router-dom';
@@ -59,8 +61,8 @@ export default class CartData extends Component {
 				window.history.back();
 			}
 		}).catch(err=>{
-			throw err;
-		})
+            this.setState({loading:false, error:err });
+        })
 	}
 
 	onChange = e =>{
@@ -89,7 +91,7 @@ export default class CartData extends Component {
 			})
 
         }).catch(err=>{
-            console.log(err);
+            this.setState({loading:false, error:err });
         })
         }, 3000);
     }
@@ -111,7 +113,16 @@ export default class CartData extends Component {
                         </div>
                 </div> 
             );
-        }
+		}
+		if(this.state.error){
+            return (
+                <div className="row justify-content-center fadeIn">
+                        <div className="col-bg-12">
+                            <PageError errors={this.state.error} />
+                        </div>
+                </div> 
+            );
+          }
         return (
             <div className="card-body">
                 <div className="row">

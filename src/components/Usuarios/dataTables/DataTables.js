@@ -5,6 +5,9 @@ import Complements from '../../complementary/Complements';
 //Loading
 import PageLoading from '../../PageLoading';
 
+//error Page
+import PageError from '../../PageError';
+
 //
 import axios from 'axios';
 
@@ -35,10 +38,7 @@ export default class DataTables extends Component {
                 });
                 $("#producto").DataTable();
             }).catch(err=>{
-                this.setState({
-                    error:err,
-                    loading:false
-                })
+                this.setState({loading:false, error:err });
             })
         }, 3000);
 
@@ -47,13 +47,19 @@ export default class DataTables extends Component {
       }
   
       async deleteUser(id){
-        await axios.delete('http://localhost:4000/api/usuarios',{data:{idUsuario:id}});
+        await axios.delete('http://localhost:4000/api/usuarios',{data:{idUsuario:id}})
+        .catch(err=>{
+            this.setState({loading:false, error:err });
+          });
         this.refresh();
         this.Messages('Usuario Bloqueado');
       }
   
       async activeUser(id){
-        await axios.post('http://localhost:4000/api/usuarios/activeUser',{idUsuario:id});
+        await axios.post('http://localhost:4000/api/usuarios/activeUser',{idUsuario:id})
+        .catch(err=>{
+            this.setState({loading:false, error:err });
+          });
         this.refresh();
         this.Messages('Usuario Activado');
       }
@@ -111,10 +117,19 @@ export default class DataTables extends Component {
                 </div> 
             );
         }
-        return (
-                   
+
+        if(this.state.error){
+            return (
+                <div className="row justify-content-center fadeIn">
+                        <div className="col-bg-12">
+                            <PageError errors={this.state.error} />
+                        </div>
+                </div> 
+            );
+        }
+        return (           
             <div className="card-body">
-            <div className="tab-content text-left">
+              <div className="tab-content text-left">
                 <div className="tab-pane active" id="inicio">
                 <div className="toolbar text-right p-3">
                     <Tippy content="Refrescar" placement="top" animation="shift-away">

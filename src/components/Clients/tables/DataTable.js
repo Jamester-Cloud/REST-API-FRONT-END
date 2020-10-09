@@ -3,6 +3,8 @@ import refreshFunction from '../../complementary/refreshFunction';
 
 //Loading
 import PageLoading from '../../PageLoading';
+//Error
+import PageError from '../../PageError';
 
 //
 import axios from 'axios';
@@ -60,6 +62,15 @@ export default class DataTable extends Component {
                 </div> 
             );
         }
+        if(this.state.error){
+            return (
+                <div className="row justify-content-center fadeIn">
+                        <div className="col-bg-12">
+                            <PageError errors={this.state.error} />
+                        </div>
+                </div> 
+            );
+          }
         return (
             <div className="card-body">
                         <div className="tab-content text-left">

@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import PageLoading from '../../PageLoading';
-import $ from 'jquery'
+import $ from 'jquery';
+
+
 export default class DataTable extends Component {
     
 

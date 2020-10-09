@@ -7,6 +7,9 @@ import {Link} from 'react-router-dom';
 
 import Tippy from '@tippyjs/react';
 
+//Error Page
+import PageError from '../../PageError';
+
 
 //Loading
 import PageLoading from '../../PageLoading';
@@ -45,6 +48,8 @@ async getPedidos(){
                 
                 loading:false,
             })
+
+            
             $("#pedidosIncompletos").DataTable();
 
             $("#pedidoCompletos").DataTable();
@@ -53,7 +58,7 @@ async getPedidos(){
         }
         
     }).catch(err=>{
-        console.log(err)
+        this.setState({loading:false, error:err });
     })
     }, 3000);
     
@@ -76,7 +81,7 @@ async denyOrder(id){
             this.refreshTables();
         }
     }).catch(err=>{
-        console.log(err);
+        this.setState({loading:false, error:err });
     })
 }
 
@@ -112,7 +117,7 @@ async changeOrder(id){
             }
         }
     }).catch(err=>{
-        console.log(err);
+        this.setState({loading:false, error:err });
     })
 }
     render() {
@@ -125,6 +130,15 @@ async changeOrder(id){
                 </div> 
             );
         }
+        if(this.state.error){
+            return (
+                <div className="row justify-content-center fadeIn">
+                        <div className="col-bg-12">
+                            <PageError errors={this.state.error} />
+                        </div>
+                </div> 
+            );
+          }
         return (
             <div className="card-body">
             <div className="tab-content text-left">

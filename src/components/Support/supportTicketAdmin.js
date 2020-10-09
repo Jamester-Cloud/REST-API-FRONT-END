@@ -10,7 +10,7 @@ export default class SupportTicketAdmin extends Component {
 
     render() {
         return (
-          <div className="content mt-5 p-3">
+          <div className="content mt-3 p-3">
           <div className="card">
             <div className="card-header d-flex justify-content-end">
               

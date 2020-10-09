@@ -2,9 +2,10 @@ import React, { Component } from 'react';
 import axios from 'axios';
 //Router
 import $ from 'jquery';
-//
+//Loading
 import PageLoading from '../../PageLoading';
-
+//Error
+import PageError from '../../PageError';
 
 import Complements from '../../complementary/Complements';
 
@@ -34,7 +35,7 @@ export default class DataTables extends Component {
                     $("#ticketsDenegados").DataTable();
                       
             }).catch(err=>{
-                console.log(err);    
+              this.setState({loading:false, error:err });
             })
           }, 3000);
       }
@@ -55,13 +56,17 @@ export default class DataTables extends Component {
       }
   
       deleteTicket = async (id) =>{
-        await axios.delete('http://localhost:4000/api/store/supportTicket', {data:{idTicketSoporte:id}});
+        await axios.delete('http://localhost:4000/api/store/supportTicket', {data:{idTicketSoporte:id}}).catch(err=>{
+          this.setState({loading:false, error:err });
+        })
         this.Messages('Ticket eliminado');
         this.refresh();
       }
   
       denyTicket = async (id) =>{
-        await axios.put('http://localhost:4000/api/store/supportTicket', {idTicketSoporte:id});
+        await axios.put('http://localhost:4000/api/store/supportTicket', {idTicketSoporte:id}).catch(err=>{
+          this.setState({loading:false, error:err });
+      })
         this.Messages('Ticket denegado');
         this.refresh();
   
@@ -76,6 +81,16 @@ export default class DataTables extends Component {
                 </div> 
             );
         }
+
+        if(this.state.error){
+          return (
+              <div className="row justify-content-center fadeIn">
+                      <div className="col-bg-12">
+                          <PageError errors={this.state.error} />
+                      </div>
+              </div> 
+          );
+      }
         return (
             <div className="card-body">
                 <div className="card-title"><h3>Tickets de Soporte</h3></div>

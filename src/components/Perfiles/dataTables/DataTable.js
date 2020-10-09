@@ -55,7 +55,10 @@ export default class DataTable extends Component {
     }
 
     deleteCrt = async(id) =>{
-      await axios.delete('http://localhost:4000/api/perfil', {data:{idPerfil:id}});
+      await axios.delete('http://localhost:4000/api/perfil', {data:{idPerfil:id}})
+      .catch(err=>{
+        this.setState({loading:false, error:err });
+      });
       this.Messages('Perfil eliminado');
       this.refresh();
     }
@@ -78,7 +81,7 @@ export default class DataTable extends Component {
                       </div>
               </div> 
           );
-      }
+        }
         return (
             <div className="card-body">
               <div className="tab-content text-left">
