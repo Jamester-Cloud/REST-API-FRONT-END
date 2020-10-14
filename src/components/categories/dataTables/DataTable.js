@@ -11,6 +11,8 @@ import PageLoading from '../../PageLoading';
 import PageError from '../../PageError';
 
 export default class DataTable extends Component {
+
+  signal = axios.CancelToken.source();
   // State del componente
   state={
     categorias:[], // -> Data State
@@ -20,22 +22,22 @@ export default class DataTable extends Component {
 
     // Categorias a elejir en el select
     async getCategorias(){
-        this.setState({loading:true});
-        
-        setTimeout( async() => {
-            await axios.get('http://localhost:4000/api/categorias').then(res=>{
-            this.setState({categorias:res.data.categorias , loading:false});
-            $("#producto").DataTable();
+      this.setState({loading:true});
+      await axios.get('http://localhost:4000/api/categorias', {cancelToken: this.signal.token}).then(res=>{
+          this.setState({categorias:res.data.categorias , loading:false});
+          $("#producto").DataTable();
       }).catch(err=>{
         this.setState({loading:false, error:err });
-    })
-        }, 3000);
+      })
     }
     // Evento on change que cambia los selects
     async componentDidMount(){
       this.getCategorias(); 
       this.Messages=Complements.bind(this);
       this.destroyDataTables=refreshFunction.bind();
+    }
+    componentWillUnmount() {
+      this.signal.cancel('Api is being canceled');
     }
 
     refresh(){
@@ -45,7 +47,7 @@ export default class DataTable extends Component {
 
     deleteCrt = async(id) =>{
 
-      await axios.delete('http://localhost:4000/api/categorias', {data:{idCategoria:id}}).catch(err=>{
+      await axios.delete('http://localhost:4000/api/categorias', {cancelToken: this.signal.token}, {data:{idCategoria:id}}).catch(err=>{
         this.setState({loading:false, error:err });
       })
       this.refresh();

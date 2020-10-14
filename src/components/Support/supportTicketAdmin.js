@@ -1,7 +1,5 @@
 import React, { Component } from 'react'
-import axios from 'axios';
-//Router
-import $ from 'jquery';
+
 import DataTables from './DataTables/DataTables';
 /// agregar modales para la confirmacion
 //Complements

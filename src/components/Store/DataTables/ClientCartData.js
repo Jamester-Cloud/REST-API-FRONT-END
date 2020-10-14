@@ -15,7 +15,7 @@ import $ from 'jquery';
 import Complements from '../../complementary/Complements';
 
 export default class ClientCartData extends Component {
-
+    signal = axios.CancelToken.source();
     state={
         Carrito:[],
         fechaEntrega:'',
@@ -24,22 +24,19 @@ export default class ClientCartData extends Component {
         error:null,
         loading:true
     }
-
+    
     async getCartData(){
         this.setState({
             loading:true,error:null
         })
-        setTimeout(async () => {
-            await axios.post('http://localhost:4000/api/store/getCart', 
+        await axios.post('http://localhost:4000/api/store/getCart', {cancelToken: this.signal.token},
             {idCliente:parseInt(sessionStorage.getItem('Cliente'))
         }).then(res=>{
             if(res.data !== [] && res.statusText === "OK"  ){
-                
                 this.setState({
                     Carrito:res.data,
                     loading:false
                 })
-    
                 //Agregando y multiplicando las cantidades por el precio
                 var arrayCantidadesPorPrecio = []
                 for (var i = 0; i < res.data.length; i++) {
@@ -57,12 +54,15 @@ export default class ClientCartData extends Component {
         }).catch(err=>{
             this.setState({loading:false, error:err });
         })
-        }, 3000);
     }
 
     componentDidMount(){
       this.getCartData();
       this.Messages=Complements.bind(this);
+    }
+
+    componentWillUnmount() {
+      this.signal.cancel('Api is being canceled');
     }
 
 
@@ -71,8 +71,11 @@ export default class ClientCartData extends Component {
         this.getCartData();
     }
 
+    
+
     async devolver(id){
-        await axios.delete('http://localhost:4000/api/store',{
+        await axios.delete('http://localhost:4000/api/store', {cancelToken: this.signal.token},
+        {
             data:{
                 idListaArticulos:id
             }

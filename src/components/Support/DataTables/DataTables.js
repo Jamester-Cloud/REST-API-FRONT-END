@@ -10,40 +10,42 @@ import PageError from '../../PageError';
 import Complements from '../../complementary/Complements';
 
 export default class DataTables extends Component {
+      signal = axios.CancelToken.source();
         // State del componente
-        state={
-            ticketsCompletos:[],
-            ticketsIncompletos:[],
-            ticketsDenegados:[],
-            error:null,
-            loading:true
-        }
+      state={
+        ticketsCompletos:[],
+        ticketsIncompletos:[],
+        ticketsDenegados:[],
+        error:null,
+        loading:true
+      }
       // Categorias a elejir en el select
       async getTickets(){
-          this.setState({loading:true});
-          setTimeout( async () => {
-            await axios.get('http://localhost:4000/api/store/supportTicket').then(res=>{
-                this.setState({
-                    ticketsIncompletos:res.data.Imcompletos,
-                    ticketsCompletos:res.data.completados,
-                    ticketsDenegados:res.data.Denegados,
-                    loading:false
-                  })
-                          ///Inicio de las tablas
-                    $("#ticketsIncompletos").DataTable();
-                    $("#ticketsCompletos").DataTable();
-                    $("#ticketsDenegados").DataTable();
-                      
-            }).catch(err=>{
-              this.setState({loading:false, error:err });
-            })
-          }, 3000);
+        this.setState({loading:true});
+        await axios.get('http://localhost:4000/api/store/supportTicket', {cancelToken: this.signal.token})
+        .then(res=>{
+            this.setState({
+                ticketsIncompletos:res.data.Imcompletos,
+                ticketsCompletos:res.data.completados,
+                ticketsDenegados:res.data.Denegados,
+                loading:false
+              })
+                      ///Inicio de las tablas
+                $("#ticketsIncompletos").DataTable();
+                $("#ticketsCompletos").DataTable();
+                $("#ticketsDenegados").DataTable();
+        }).catch(err=>{
+          this.setState({loading:false, error:err });
+        })
       }
      
   
       async componentDidMount(){
         this.getTickets(); 
         this.Messages=Complements.bind(this);
+      }
+      componentWillUnmount() {
+        this.signal.cancel('Api is being canceled');
       }
   
       refresh(){
@@ -56,7 +58,7 @@ export default class DataTables extends Component {
       }
   
       deleteTicket = async (id) =>{
-        await axios.delete('http://localhost:4000/api/store/supportTicket', {data:{idTicketSoporte:id}}).catch(err=>{
+        await axios.delete('http://localhost:4000/api/store/supportTicket', {cancelToken: this.signal.token}, {data:{idTicketSoporte:id}}).catch(err=>{
           this.setState({loading:false, error:err });
         })
         this.Messages('Ticket eliminado');
@@ -64,7 +66,8 @@ export default class DataTables extends Component {
       }
   
       denyTicket = async (id) =>{
-        await axios.put('http://localhost:4000/api/store/supportTicket', {idTicketSoporte:id}).catch(err=>{
+        await axios.put('http://localhost:4000/api/store/supportTicket', {cancelToken: this.signal.token}, {idTicketSoporte:id})
+        .catch(err=>{
           this.setState({loading:false, error:err });
       })
         this.Messages('Ticket denegado');

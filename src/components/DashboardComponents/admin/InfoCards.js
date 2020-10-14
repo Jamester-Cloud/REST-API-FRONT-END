@@ -8,9 +8,7 @@ export default class InfoCards extends Component {
     }
 
     componentDidMount(){
-        setTimeout(() => { // prueba
-            this.setState({loading:false});
-        }, 1000);
+      this.setState({loading:false});
     }
     
     

@@ -11,20 +11,20 @@ export default class Cart extends Component {
         return (
             <div className="content mt-5 p-3">
             <div className="card">
-              <div class="card-header d-flex justify-content-end">
-                <div class="nav-tabs-wrapper ">
-                      <ul class="nav nav-tabs" data-tabs="tabs">
-                        <li class="nav-item">
+              <div className="card-header d-flex justify-content-end">
+                <div className="nav-tabs-wrapper ">
+                      <ul className="nav nav-tabs" data-tabs="tabs">
+                        <li className="nav-item">
                             <Tippy content="Agregados al carrito" position="top" animation="fade">
-                                <a class=" nav-link active text-info" href="#inicio" data-toggle="tab">  
-                                    <i class="fa fa-shopping-cart"></i>
+                                <a className=" nav-link active text-info" href="#inicio" data-toggle="tab">  
+                                    <i className="fa fa-shopping-cart"></i>
                                 </a>
                             </Tippy>
                         </li>                           
                         <li class="nav-item">
                             <Tippy content="Pedido a domicilio" position="top" animation="fade">
-                                <a class="nav-link text-success " href="#pedido" data-toggle="tab">
-                                    <i class="fa fa-dollar-sign"></i>
+                                <a className="nav-link text-success " href="#pedido" data-toggle="tab">
+                                    <i className="fa fa-dollar-sign"></i>
                                 </a>
                             </Tippy>
                         </li>

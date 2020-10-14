@@ -20,6 +20,8 @@ import fechaES from '../../complementary/fechaFormat';
 
 export default class OrdersDataTables extends Component {
 
+   signal = axios.CancelToken.source();
+
    state={
         pedidosCompletados:[],
         pedidosPorCompletar:[],
@@ -28,98 +30,92 @@ export default class OrdersDataTables extends Component {
         loading:true
     }
 
-async getPedidos(){
+  async getPedidos(){
+      this.setState({
+          loading:true , error:null
+      })    
+      await axios.post('http://localhost:4000/api/store/getPedidos', {cancelToken: this.signal.token},
+              {idCliente:sessionStorage.getItem('Cliente')}
+      ).then(res=>{
+          if(res.statusText==="OK"){
+              this.setState({
+                  pedidosPorCompletar:res.data.Imcompletos,
+                  pedidosCompletados:res.data.completados,
+                  pedidosAnulados:res.data.Denegados,  
+                  loading:false,
+              })
+              $("#pedidosIncompletos").DataTable();
 
-    this.setState({
-        loading:true , error:null
-    })
+              $("#pedidoCompletos").DataTable();
 
-    setTimeout( async () => {
-        await axios.post('http://localhost:4000/api/store/getPedidos',
-        {idCliente:sessionStorage.getItem('Cliente')}
-    ).then(res=>{
-        if(res.statusText==="OK"){
-            this.setState({
-                pedidosPorCompletar:res.data.Imcompletos,
-
-                pedidosCompletados:res.data.completados,
-
-                pedidosAnulados:res.data.Denegados,
-                
-                loading:false,
-            })
-
-            
-            $("#pedidosIncompletos").DataTable();
-
-            $("#pedidoCompletos").DataTable();
-
-            $("#pedidosDenegados").DataTable();
-        }
-        
-    }).catch(err=>{
-        this.setState({loading:false, error:err });
-    })
-    }, 3000);
-    
-}
-
-async componentDidMount(){
-    this.getPedidos();
-    this.fechaEs=fechaES.bind();
-    this.Messages=Complements.bind();
-    this.fechaEs();   
-}
-
-async denyOrder(id){
-    await axios.put("http://localhost:4000/api/store/orderChange",{
-        idPedido:id
-    }).then(res=>{
+              $("#pedidosDenegados").DataTable();
+          }
+      }).catch(err=>{
+          this.setState({loading:false, error:err });
+      })    
+  }
+    async componentDidMount(){
         this.getPedidos();
-        if(res.statusText==="OK"){
-            this.Messages("Pedido Denegado");
-            this.refreshTables();
-        }
-    }).catch(err=>{
-        this.setState({loading:false, error:err });
-    })
-}
+        this.fechaEs=fechaES.bind();
+        this.Messages=Complements.bind();
+        this.fechaEs();   
+    }
 
-refreshTables(){  
-   $('#pedidoCompletos').DataTable().destroy(); 
-   $('#pedidosIncompletos').DataTable().destroy(); 
-   $('#pedidosDenegados').DataTable().destroy(); 
-   this.getPedidos();
-}
+    componentWillUnmount() {
+        this.signal.cancel('Api is being canceled');
+    }
 
-async changeOrder(id){
-    await axios.post("http://localhost:4000/api/store/orderChange",{
-        idPedido:id
-    }).then(res=>{
-        if(res.statusText==="OK"){
-            switch (res.data) {
-                case "Pedido completado":
-                    this.Messages("Pedido completado")
-                    this.refreshTables();
-                    break;
-            
-                case "Pedido agregado a revision":
-                    this.Messages("Pedido agregado a revision")
-                    this.refreshTables();
-                    break;
-
-                case "Pedido eliminado":
-                    this.Messages("Pedido eliminado")
-                    this.refreshTables();
-                    break;
-                default:
-                break;
+    async denyOrder(id){
+        await axios.put("http://localhost:4000/api/store/orderChange", {cancelToken: this.signal.token},
+        {
+            idPedido:id
+        }).then(res=>{
+            this.getPedidos();
+            if(res.statusText==="OK"){
+                this.Messages("Pedido Denegado");
+                this.refreshTables();
             }
-        }
-    }).catch(err=>{
-        this.setState({loading:false, error:err });
-    })
-}
+        }).catch(err=>{
+            this.setState({loading:false, error:err });
+        })
+    }
+
+    refreshTables(){  
+       $('#pedidoCompletos').DataTable().destroy(); 
+       $('#pedidosIncompletos').DataTable().destroy(); 
+       $('#pedidosDenegados').DataTable().destroy(); 
+       this.getPedidos();
+    }
+
+    async changeOrder(id){
+        await axios.post("http://localhost:4000/api/store/orderChange", {cancelToken: this.signal.token},
+        {
+            idPedido:id
+        }).then(res=>{
+            if(res.statusText==="OK"){
+                switch (res.data) {
+                    case "Pedido completado":
+                        this.Messages("Pedido completado")
+                        this.refreshTables();
+                        break;
+                
+                    case "Pedido agregado a revision":
+                        this.Messages("Pedido agregado a revision")
+                        this.refreshTables();
+                        break;
+
+                    case "Pedido eliminado":
+                        this.Messages("Pedido eliminado")
+                        this.refreshTables();
+                        break;
+                    default:
+                    break;
+                }
+            }
+        }).catch(err=>{
+            this.setState({loading:false, error:err });
+        })
+    }
     render() {
         if(this.state.loading === true){
             return (

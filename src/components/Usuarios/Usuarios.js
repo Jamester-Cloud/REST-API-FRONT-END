@@ -1,7 +1,6 @@
 import React, { Component } from 'react'
 import DataTable from './dataTables/DataTables';
 //ToolTips
-import Tippy from '@tippyjs/react';
 
 export default class Usuarios extends Component {
 

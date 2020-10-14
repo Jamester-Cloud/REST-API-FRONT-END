@@ -1,3 +1,6 @@
+
+/* eslint-disable */
+
 import React, { useState, useEffect}from "react";
 import { useForm } from "react-hook-form";
 import Axios from 'axios';
@@ -39,6 +42,9 @@ if(idEditing !== undefined){
      const nombre =  document.getElementById('nombre')
      nombre.value = res.data[0].nombre;
 
+     const descripcion =  document.getElementById('descripcion')
+     descripcion.defaultValue = res.data[0].descripcion;
+
      const precio =  document.getElementById('precio')
      precio.value = res.data[0].precio;
 
@@ -65,10 +71,11 @@ if(idEditing !== undefined){
     if(Edit){
       console.log(fields.categoria);
       // Envio de informacion para editar
-    await  Axios.put('http://localhost:4000/api/articulos',{
+      await Axios.put('http://localhost:4000/api/articulos',{
         idArticulo:props.match.params.id,
         idCategoria:fields.categoria,
         nombre:fields.nombre,
+        descripcion:fields.descripcion,
         precio:fields.precio,
         stock:fields.stock
       }).then((res)=>{
@@ -77,12 +84,13 @@ if(idEditing !== undefined){
             history.push('/articulo')
           }
       }).catch((err)=>{
-        console.log(err);
+          alert(err);
       })
     }else{
       Axios.post('http://localhost:4000/api/articulos',{
         idCategoria:fields.categoria,
         nombre:fields.nombre,
+        descripcion:fields.descripcion,
         precio:fields.precio,
         stock:fields.stock
       }).then((res)=>{
@@ -113,12 +121,17 @@ if(idEditing !== undefined){
               <div className="col-md-12 mx-auto">
                 <form onSubmit={handleSubmit(onSubmit)}>
                 <div className="form-row">
-                  <div className="form-group col-md-6">
+                  <div className="form-group col-md-12">
                     <label htmlFor="nombre">Nombre:</label>
                     <input type="text" className="form-control campoObligatorio" name="nombre" id="nombre" ref={register({ pattern: /^[A-Za-z0-9\s]+$/g , required: true })} placeholder="Ingrese el nombre del articulo" />
                     {errors.nombre && errors.nombre.type === "required" && <span className="ml-2 text-danger">*Campo obligatorio</span>}
                     {errors.nombre && errors.nombre.type === "pattern" && <span className="ml-2 text-danger">*Solo se permiten letras</span> }
 
+                  </div>
+                  <div className="form-group col-md-12">
+                    <label htmlFor="nombre">Descripción:</label>
+                    <textarea type="text" className="form-control campoObligatorio" name="descripcion" id="descripcion" ref={register({required: true })} placeholder="Ingrese el descripcion del articulo" > </textarea>
+                    {errors.descripcion && errors.descripcion.type === "required" && <span className="ml-2 text-danger">*Campo obligatorio</span>}
                   </div>
                   <div className="form-group col-md-6">
                     <label htmlFor="stock">Stock:</label>
@@ -127,7 +140,7 @@ if(idEditing !== undefined){
                     {errors.stock && errors.stock.type === "pattern" && <span className="ml-2 text-danger">*Solo se permiten numeros entero positivos</span> }
 
                   </div>
-                  <div className="form-group col-md-12">
+                  <div className="form-group col-md-6">
                     <label htmlFor="precio">Precio:</label>
                     <input type="text" className="form-control campoObligatorio" name="precio" id="precio" ref={register({ required: true, pattern:/^[+]?([1-9][0-9]*(?:[\.][0-9]*)?|0*\.0*[1-9][0-9]*)(?:[eE][+-][0-9]+)?$/ })} placeholder="Ingrese el precio actual del articulo" />
                     {errors.precio && errors.precio.type === "required" && <span className="ml-2 text-danger">*Campo obligatorio</span>}

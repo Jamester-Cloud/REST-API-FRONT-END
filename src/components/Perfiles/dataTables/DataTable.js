@@ -9,13 +9,17 @@ import PageLoading from '../../PageLoading';
 //
 import axios from 'axios';
 
-import $, { error } from 'jquery';
+import $ from 'jquery';
 import Tippy from '@tippyjs/react';
 
 import PageError from '../../PageError';
 
 export default class DataTable extends Component {
-      // State del componente
+  
+   signal = axios.CancelToken.source();
+  
+
+  // State del componente
   state={
     perfil:'',
     error:null,
@@ -25,37 +29,37 @@ export default class DataTable extends Component {
 
     // Categorias a elejir en el select
     async getPerfiles(){
-
         this.setState({
             loading:true , error:null
         })
-
-        setTimeout( async () => {
-            await axios.get('http://localhost:4000/api/perfil')
-            .then(res=>{
-                this.setState({perfiles:res.data, loading:false });
-                $("#producto").DataTable();
-            
-            }).catch(err=>{
-                this.setState({loading:false, error:err });
-            })
-        }, 3000);
-      
+        await axios.get('http://localhost:4000/api/perfil', {cancelToken: this.signal.token})
+        .then(res=>{
+            this.setState({perfiles:res.data, loading:false });
+            $("#producto").DataTable();
+        
+        }).catch(err=>{
+            this.setState({loading:false, error:err });
+        })
     }
 
+    // cuando se monte el componente
     componentDidMount(){
       this.getPerfiles(); 
       this.Messages=Complements.bind(this);
       this.destroyDataTables=refreshFunction.bind();
     }
-
+    ///Cuando se desmonte el componente
+    componentWillUnmount() {
+      this.signal.cancel('Api is being canceled');
+    }
+    //Refrescar las tablas
     refresh(){
       this.destroyDataTables();
       this.getPerfiles();
     }
 
     deleteCrt = async(id) =>{
-      await axios.delete('http://localhost:4000/api/perfil', {data:{idPerfil:id}})
+      await axios.delete('http://localhost:4000/api/perfil', {cancelToken: this.signal.token,}, {data:{idPerfil:id}})
       .catch(err=>{
         this.setState({loading:false, error:err });
       });

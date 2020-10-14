@@ -14,6 +14,8 @@ import Tippy from '@tippyjs/react';
 
 export default class DataTablesClient extends Component {
 
+    signal = axios.CancelToken.source();
+
     state={
         ticketsSoporteCliente:[],
         error:null,
@@ -29,25 +31,25 @@ export default class DataTablesClient extends Component {
 
     async getTicketsCliente(){
         this.setState({loading:true});
-        setTimeout( async () => {
-            await axios.post('http://localhost:4000/api/store/getTicketClient',{
-                idCliente:parseInt(sessionStorage.getItem('Cliente'))
-            }).then(res=>{
-                if(res.statusText === "OK"){
-                    this.setState({
-                        ticketsSoporteCliente:res.data,
-                        loading:false
-                    })
-                    $("#producto").DataTable();
-                }
-            }).catch(err=>{
-                this.setState({loading:false, error:err });
-            })
-        }, 3000);
+        await axios.post('http://localhost:4000/api/store/getTicketClient', {cancelToken: this.signal.token}, 
+        {
+            idCliente:parseInt(sessionStorage.getItem('Cliente'))
+        }).then(res=>{
+            if(res.statusText === "OK"){
+                this.setState({
+                    ticketsSoporteCliente:res.data,
+                    loading:false
+                })
+                $("#producto").DataTable();
+            }
+        }).catch(err=>{
+            this.setState({loading:false, error:err });
+        })
     }
 
     async completeTicket(id,feedback){
-        await axios.put('http://localhost:4000/api/store/getTicketClient',{
+        await axios.put('http://localhost:4000/api/store/getTicketClient', {cancelToken: this.signal.token}, 
+        {
             idCliente:id,
             feedback:feedback
         }).then(res=>{
@@ -66,6 +68,12 @@ export default class DataTablesClient extends Component {
         this.Messages=Complements.bind(this);
         this.getTicketsCliente();
     }
+    ///Cuando se desmonte el componente
+    
+    componentWillUnmount() {
+      this.signal.cancel('Api is being canceled');
+    }
+
     render() {
         if(this.state.loading === true){
             return (
@@ -137,28 +145,28 @@ export default class DataTablesClient extends Component {
                       </div>
                   </div>
                    {/* Modal */}
-                <div className="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-                    <div className="modal-dialog modal-dialog-centered" role="document">
-                        <div className="modal-content">
-                            <div className="modal-header">
-                                <h5 className="modal-title" id="exampleModalLongTitle">Por favor, tomese el tiempo de darnos un feedback.</h5>
-                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
-                                </button>
-                            </div>
-                            <div class="modal-body">
-                                    <div className="form-row">
-                                        <div className="form-group col-md-12">
-                                            <textarea className="form-control" name="feedback" id="feedback"></textarea>
+                    <div className="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                        <div className="modal-dialog modal-dialog-centered" role="document">
+                            <div className="modal-content">
+                                <div className="modal-header">
+                                    <h5 className="modal-title" id="exampleModalLongTitle">Por favor, tomese el tiempo de darnos un feedback.</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                        <div className="form-row">
+                                            <div className="form-group col-md-12">
+                                                <textarea className="form-control" name="feedback" id="feedback"></textarea>
+                                            </div>
                                         </div>
-                                    </div>
-                            </div>
-                            <div class="modal-footer mx-auto">
-                                <button type="button" onClick={ () => this.completeTicket(parseInt(sessionStorage.getItem('Cliente')), $("#feedback").val() ) } className="btn btn-round btn-success">Completar Ticket</button>
+                                </div>
+                                <div class="modal-footer mx-auto">
+                                    <button type="button" onClick={ () => this.completeTicket(parseInt(sessionStorage.getItem('Cliente')), $("#feedback").val() ) } className="btn btn-round btn-success">Completar Ticket</button>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
               </div>
         )
     }

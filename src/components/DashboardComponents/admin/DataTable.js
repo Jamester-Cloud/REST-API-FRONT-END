@@ -12,10 +12,8 @@ export default class DataTable extends Component {
     }
 
     componentDidMount(){
-        setTimeout(() => { // prueba
-            this.setState({loading:false});
-            $("#productos").DataTable();
-        }, 3000);
+      this.setState({loading:false});
+      $("#productos").DataTable();
     }
 
     render() {

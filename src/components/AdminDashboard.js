@@ -7,6 +7,7 @@ import DataTable from './DashboardComponents/admin/DataTable';
 
 
 export default class AdminDashboard extends Component {
+  
   state={
     clientesActivos:0,
     clientesInactivos:0,

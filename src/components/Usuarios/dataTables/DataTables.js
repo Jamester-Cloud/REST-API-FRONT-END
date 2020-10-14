@@ -11,43 +11,41 @@ import PageError from '../../PageError';
 //
 import axios from 'axios';
 
-import $, { error } from 'jquery';
+import $ from 'jquery';
 import Tippy from '@tippyjs/react';
 
 export default class DataTables extends Component {
 
+    signal = axios.CancelToken.source();
+
     state={
-        usuarios:[], // -> data State
-        error:null,
-        loading:true
+      usuarios:[], // -> data State
+      error:null,
+      loading:true
     }
-
-
+    //Obteniendo a todos los usuarios
     async getUsers(){
-
         this.setState({
             loading:true , error:null
         })
+        await axios.get('http://localhost:4000/api/usuarios', {cancelToken: this.signal.token})
+        .then(res=>{
+            this.setState({
+                usuarios:res.data,
+                loading:false
+            });
+            $("#producto").DataTable();
+        }).catch(err=>{
+            this.setState({loading:false, error:err });
+        })        
+    }
 
-        setTimeout( async () => {
-            await axios.get('http://localhost:4000/api/usuarios')
-            .then(res=>{
-                this.setState({
-                    usuarios:res.data,
-                    loading:false
-                });
-                $("#producto").DataTable();
-            }).catch(err=>{
-                this.setState({loading:false, error:err });
-            })
-        }, 3000);
-
-        
-        
-      }
+    componentWillUnmount() {
+      this.signal.cancel('Api is being canceled');
+    } 
   
       async deleteUser(id){
-        await axios.delete('http://localhost:4000/api/usuarios',{data:{idUsuario:id}})
+        await axios.delete('http://localhost:4000/api/usuarios', {cancelToken: this.signal.token}, {data:{idUsuario:id}})
         .catch(err=>{
             this.setState({loading:false, error:err });
           });
@@ -56,16 +54,16 @@ export default class DataTables extends Component {
       }
   
       async activeUser(id){
-        await axios.post('http://localhost:4000/api/usuarios/activeUser',{idUsuario:id})
+        await axios.post('http://localhost:4000/api/usuarios/activeUser', {cancelToken: this.signal.token}, {idUsuario:id})
         .catch(err=>{
             this.setState({loading:false, error:err });
           });
         this.refresh();
         this.Messages('Usuario Activado');
       }
-      //si el usuario es el actual en la session se debera cerrar la session y para que la vuelva a abrir
+      //si el usuario es el actual en la session se debera cerrar la session, para que la vuelva a abrir
       async changeProfile(id){
-          await axios.put('http://localhost:4000/api/usuarios/checkUser',{
+          await axios.put('http://localhost:4000/api/usuarios/checkUser', {cancelToken: this.signal.token}, {
               idUsuario:id
           }).then( async (res)=>{
               // si la peticion al servidor estubo correcta.
@@ -96,18 +94,22 @@ export default class DataTables extends Component {
       }
   
       refresh(){
-          this.destroyDataTables();
-          this.getUsers();
+        this.destroyDataTables();
+        this.getUsers();
       }
-  
-  
+
       componentDidMount(){
-          this.getUsers();
-          this.Messages=Complements.bind(this);
-          this.destroyDataTables=refreshFunction.bind();
+        this.getUsers();
+        this.Messages=Complements.bind(this);
+        this.destroyDataTables=refreshFunction.bind();
+      }
+
+      componentWillUnmount() {
+        this.signal.cancel('Api is being canceled');
       }
 
     render() {
+
         if(this.state.loading === true){
             return (
                 <div className="row justify-content-center fadeIn">

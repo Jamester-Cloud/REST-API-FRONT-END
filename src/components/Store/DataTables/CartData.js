@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import axios from 'axios';
 import {format}from 'timeago.js';
 import Swal from 'sweetalert2'; 
+import $ from 'jquery';
 //Loading
 import PageLoading from '../../PageLoading';
 //Errors
@@ -12,6 +13,8 @@ import { Link} from 'react-router-dom';
 
 
 export default class CartData extends Component {
+
+    signal = axios.CancelToken.source();
 
     state={
 		//ids de ingreso
@@ -46,7 +49,7 @@ export default class CartData extends Component {
 	/// Add to cart function
 	onSubmit=e=>{
 		e.preventDefault(); // Quitando el comportamiento del formulario
-		axios.put('http://localhost:4000/api/store',{
+		axios.put('http://localhost:4000/api/store', {cancelToken: this.signal.token}, {
 			idArticulo:this.state.idArticulo,
 			idCliente:this.state.idCliente,
 			stock:this.state.stock,
@@ -73,7 +76,7 @@ export default class CartData extends Component {
 
     async getData(){
         setTimeout( async () => {
-            await axios.post('http://localhost:4000/api/articulos/getArt',{
+            await axios.post('http://localhost:4000/api/articulos/getArt', {cancelToken: this.signal.token},{
             idArticulo:this.props.id
           })
         .then(res=>{
@@ -100,7 +103,14 @@ export default class CartData extends Component {
 		this.fechaES=fechaES.bind();
 		this.getData();
 		this.fechaES();
+        // removiendo el modal en su totalidad
+        $('.modal-backdrop').remove();
 	}
+
+    componentWillUnmount() {
+      this.signal.cancel('Api is being canceled');
+    }
+    
 	updateTextInput(val) { // Haciendo visible el valor
         document.getElementById('textInput').value=val;
     }

@@ -9,7 +9,7 @@ import PageError from '../../PageError';
 //
 import axios from 'axios';
 
-import $, { error } from 'jquery';
+import $ from 'jquery';
 import Tippy from '@tippyjs/react';
 
 export default class DataTable extends Component {
