@@ -47,7 +47,7 @@ export default class DataTable extends Component {
 
     deleteCrt = async(id) =>{
 
-      await axios.delete('http://localhost:4000/api/categorias', {cancelToken: this.signal.token}, {data:{idCategoria:id}}).catch(err=>{
+      await axios.delete('http://localhost:4000/api/categorias', {data:{idCategoria:id}}, {cancelToken: this.signal.token}).catch(err=>{
         this.setState({loading:false, error:err });
       })
       this.refresh();

@@ -59,7 +59,7 @@ export default class DataTable extends Component {
     }
 
     deleteCrt = async(id) =>{
-      await axios.delete('http://localhost:4000/api/perfil', {cancelToken: this.signal.token,}, {data:{idPerfil:id}})
+      await axios.delete('http://localhost:4000/api/perfil', {data:{idPerfil:id}}, {cancelToken: this.signal.token,})
       .catch(err=>{
         this.setState({loading:false, error:err });
       });

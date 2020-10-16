@@ -13,8 +13,8 @@ import $ from 'jquery';
 import Tippy from '@tippyjs/react';
 
 export default class DataTable extends Component {
+   signal = axios.CancelToken.source();
     // state del componente
-
     state={
         Clientes:[], // ->Data State
         loading:true,
@@ -26,25 +26,27 @@ export default class DataTable extends Component {
         this.setState({
             loading:true , error:null
         })
-
-        setTimeout( async () => { // Prueba, quitar al subir al hosting
-            await axios.get('http://localhost:4000/api/clientes')
-            .then(res=>{
-                this.setState({Clientes:res.data, loading:false });
-                $("#producto").DataTable();
-            }).catch(err=>{
-                this.setState({
-                    error:err,
-                    loading:false
-                })
+        await axios.get('http://localhost:4000/api/clientes', {cancelToken: this.signal.token})
+        .then(res=>{
+            this.setState({Clientes:res.data, loading:false });
+            $("#producto").DataTable();
+        }).catch(err=>{
+            this.setState({
+                error:err,
+                loading:false
             })
-        }, 3000);
+        })
+        
 
     }
 
       componentDidMount(){
           this.getClientes();
           this.destroyDataTables=refreshFunction.bind();
+      }
+      ///Cuando se desmonte el componente
+      componentWillUnmount() {
+        this.signal.cancel('Api is being canceled');
       }
 
       refresh(){

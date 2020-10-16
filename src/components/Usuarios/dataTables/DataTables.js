@@ -39,13 +39,9 @@ export default class DataTables extends Component {
             this.setState({loading:false, error:err });
         })        
     }
-
-    componentWillUnmount() {
-      this.signal.cancel('Api is being canceled');
-    } 
   
       async deleteUser(id){
-        await axios.delete('http://localhost:4000/api/usuarios', {cancelToken: this.signal.token}, {data:{idUsuario:id}})
+        await axios.delete('http://localhost:4000/api/usuarios',{data:{idUsuario:id}}, {cancelToken: this.signal.token})
         .catch(err=>{
             this.setState({loading:false, error:err });
           });
@@ -54,7 +50,7 @@ export default class DataTables extends Component {
       }
   
       async activeUser(id){
-        await axios.post('http://localhost:4000/api/usuarios/activeUser', {cancelToken: this.signal.token}, {idUsuario:id})
+        await axios.post('http://localhost:4000/api/usuarios/activeUser', {idUsuario:id}, {cancelToken: this.signal.token})
         .catch(err=>{
             this.setState({loading:false, error:err });
           });
@@ -63,9 +59,9 @@ export default class DataTables extends Component {
       }
       //si el usuario es el actual en la session se debera cerrar la session, para que la vuelva a abrir
       async changeProfile(id){
-          await axios.put('http://localhost:4000/api/usuarios/checkUser', {cancelToken: this.signal.token}, {
+          await axios.put('http://localhost:4000/api/usuarios/checkUser', {
               idUsuario:id
-          }).then( async (res)=>{
+          },  {cancelToken: this.signal.token}).then( async (res)=>{
               // si la peticion al servidor estubo correcta.
               if(res.statusText==='OK'){
                   // si el id del usuario coincide con el id el usuario actual (LogOut)

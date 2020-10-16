@@ -14,9 +14,10 @@ import PageLoading from '../../PageLoading';
 import PageError from '../../PageError';
 
 export default class dataTable extends Component {
+  
   signal = axios.CancelToken.source();
-
-    // State del componente
+  
+  // State del componente
   state={
     articles:[],
     loading:true,
@@ -48,7 +49,7 @@ export default class dataTable extends Component {
    }
    //Obteniendo Articulos
    async getArticulos(){
-      await axios.get('http://localhost:4000/api/articulos').then(res=>{
+      await axios.get('http://localhost:4000/api/articulos', {cancelToken: this.signal.token}).then(res=>{
           this.setState({articles:res.data, loading:false });
           $("#producto").DataTable();
       }).catch(err=>{
@@ -73,7 +74,7 @@ export default class dataTable extends Component {
     }
 
     deleteArt = async(id) =>{
-      await axios.delete('http://localhost:4000/api/articulos', {cancelToken: this.signal.token}, {data:{idArticulo:id}}).catch(err=>{
+      await axios.delete('http://localhost:4000/api/articulos', {data:{idArticulo:id}}, {cancelToken: this.signal.token}).catch(err=>{
         this.setState({error:err , loading:false });
       })
       this.Messages('Articulo Eliminado');

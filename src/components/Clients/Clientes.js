@@ -15,7 +15,7 @@ export default class Clientes extends Component {
                     </div>       
                     {/* Aca va la dataTable */}
                     <DataTable/>
-                    </div>
+                </div>
             </div>
         )
     }

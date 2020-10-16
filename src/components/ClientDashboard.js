@@ -10,6 +10,9 @@ import DataTable from './DashboardComponents/client/DataTable';
 
 export default class ClientDashboard extends Component {
 
+
+  signal = axios.CancelToken.source();
+
   state={
     pedidosEncargados:0,
     pedidosCompletados:0,
@@ -25,7 +28,7 @@ export default class ClientDashboard extends Component {
     const res = await axios.post('http://localhost:4000/api/usuarios/admin', {
       idCliente:idCliente,
       username:username
-    })
+    }, {cancelToken: this.signal.token})
 
     this.setState({
       pedidosEncargados:res.data.pedidosImcompletados.pedidosIncomplete,
@@ -40,6 +43,10 @@ export default class ClientDashboard extends Component {
     this.getInfo();
     this.fechaEs=fechaES.bind();
     this.fechaEs();
+  }
+
+  componentWillUnmount() {
+    this.signal.cancel('Api is being canceled');
   }
 
     render() {

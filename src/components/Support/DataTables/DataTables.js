@@ -58,7 +58,7 @@ export default class DataTables extends Component {
       }
   
       deleteTicket = async (id) =>{
-        await axios.delete('http://localhost:4000/api/store/supportTicket', {cancelToken: this.signal.token}, {data:{idTicketSoporte:id}}).catch(err=>{
+        await axios.delete('http://localhost:4000/api/store/supportTicket', {data:{idTicketSoporte:id}}, {cancelToken: this.signal.token}).catch(err=>{
           this.setState({loading:false, error:err });
         })
         this.Messages('Ticket eliminado');
@@ -66,7 +66,7 @@ export default class DataTables extends Component {
       }
   
       denyTicket = async (id) =>{
-        await axios.put('http://localhost:4000/api/store/supportTicket', {cancelToken: this.signal.token}, {idTicketSoporte:id})
+        await axios.put('http://localhost:4000/api/store/supportTicket', {idTicketSoporte:id}, {cancelToken: this.signal.token})
         .catch(err=>{
           this.setState({loading:false, error:err });
       })

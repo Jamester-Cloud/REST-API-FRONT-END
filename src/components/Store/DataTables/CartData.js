@@ -49,12 +49,12 @@ export default class CartData extends Component {
 	/// Add to cart function
 	onSubmit=e=>{
 		e.preventDefault(); // Quitando el comportamiento del formulario
-		axios.put('http://localhost:4000/api/store', {cancelToken: this.signal.token}, {
+		axios.put('http://localhost:4000/api/store', {
 			idArticulo:this.state.idArticulo,
 			idCliente:this.state.idCliente,
 			stock:this.state.stock,
 			cantidad:parseInt(this.state.cantidad)
-		}).then(res =>{
+		}, {cancelToken: this.signal.token}).then(res =>{
 			if(res.statusText==='OK'){
 				if(this.state.cantidad >1 ){
 					this.Messages('Articulos Agregados al carrito')
@@ -74,11 +74,10 @@ export default class CartData extends Component {
         })
     }
 
-    async getData(){
-        setTimeout( async () => {
-            await axios.post('http://localhost:4000/api/articulos/getArt', {cancelToken: this.signal.token},{
+    async getData(){   
+        await axios.post('http://localhost:4000/api/articulos/getArt',{
             idArticulo:this.props.id
-          })
+          }, {cancelToken: this.signal.token})
         .then(res=>{
             //console.log(res.data)
 			this.setState({
@@ -95,8 +94,7 @@ export default class CartData extends Component {
 
         }).catch(err=>{
             this.setState({loading:false, error:err });
-        })
-        }, 3000);
+        }) 
     }
 
     async componentDidMount(){
@@ -144,7 +142,7 @@ export default class CartData extends Component {
                             <input type="hidden" value="{{art.idArticulo}}" name="idArticulo"/>
                             <h6>-Disponibles</h6>
                             <label htmlFor="rangeInput">Cantidad a comprar</label>
-                            <input type="range" name="cantidad" className="form-control-range" onChange={this.onChange} max={this.state.stock}/>
+                            <input type="range" name="cantidad" id="cantidad" className="form-control-range" onChange={this.onChange} max={this.state.stock}/>
                             <input type="text" value={this.state.cantidad} required={true} id="textInput" className="form-control" readOnly={true}/>
                             <hr/>
                             <div className="text-center">

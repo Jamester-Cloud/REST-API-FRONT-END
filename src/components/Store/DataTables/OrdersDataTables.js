@@ -33,9 +33,10 @@ export default class OrdersDataTables extends Component {
   async getPedidos(){
       this.setState({
           loading:true , error:null
-      })    
-      await axios.post('http://localhost:4000/api/store/getPedidos', {cancelToken: this.signal.token},
-              {idCliente:sessionStorage.getItem('Cliente')}
+      })
+          
+      await axios.post('http://localhost:4000/api/store/getPedidos',
+              {idCliente:sessionStorage.getItem('Cliente')}, {cancelToken: this.signal.token}
       ).then(res=>{
           if(res.statusText==="OK"){
               this.setState({

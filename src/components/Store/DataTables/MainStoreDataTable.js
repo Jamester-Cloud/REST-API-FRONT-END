@@ -35,7 +35,6 @@ class MainStoreDataTable extends React.Component {
     await axios.post('http://localhost:4000/api/articulos/getArt',{
       idArticulo:id
     }, {cancelToken: this.signal.token}).then(res=>{
-      console.log(res.data);
       this.setState({
         idArticulo:res.data[0].idArticulo,
         categoria:res.data[0].categoria,

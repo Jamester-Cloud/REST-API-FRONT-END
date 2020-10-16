@@ -7,6 +7,9 @@ import DataTable from './DashboardComponents/admin/DataTable';
 
 
 export default class AdminDashboard extends Component {
+
+
+  signal = axios.CancelToken.source();
   
   state={
     clientesActivos:0,
@@ -19,7 +22,7 @@ export default class AdminDashboard extends Component {
   async getInfo(){
 
     let currentAdminUser =  sessionStorage.getItem('Username');
-    const res = await axios.post('http://localhost:4000/api/usuarios/admin',{username:currentAdminUser});
+    const res = await axios.post('http://localhost:4000/api/usuarios/admin',{username:currentAdminUser}, {cancelToken: this.signal.token});
     
     this.setState({
       //clientes
@@ -36,6 +39,10 @@ export default class AdminDashboard extends Component {
 
   componentDidMount(){
     this.getInfo();
+  }
+
+  componentWillUnmount() {
+        this.signal.cancel('Api is being canceled');
   }
 
 

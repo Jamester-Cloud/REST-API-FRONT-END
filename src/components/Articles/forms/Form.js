@@ -6,6 +6,7 @@ import { useForm } from "react-hook-form";
 import Axios from 'axios';
 import Complements from '../../complementary/Complements';
 import { useHistory } from "react-router-dom";
+import $ from 'jquery';
 
 
 export default function FormArticulo(props){
@@ -33,6 +34,26 @@ export default function FormArticulo(props){
     };
  
     fetchDataCategories();
+
+    function readURL(input) {
+      if (input.files && input.files[0]) {
+        var reader = new FileReader();
+        
+        reader.onload = function(e) {
+          $('#blah').attr('src', e.target.result);
+        }
+        
+        reader.readAsDataURL(input.files[0]); // convert to base64 string
+      }
+    } 
+
+    $("#productPicture").change(function() {
+      readURL(this);
+    });
+
+
+
+
   }, []);
 // carga de los campos en caso de edicion
 if(idEditing !== undefined){
@@ -86,20 +107,22 @@ if(idEditing !== undefined){
       }).catch((err)=>{
           alert(err);
       })
-    }else{
-      Axios.post('http://localhost:4000/api/articulos',{
-        idCategoria:fields.categoria,
-        nombre:fields.nombre,
-        descripcion:fields.descripcion,
-        precio:fields.precio,
-        stock:fields.stock
-      }).then((res)=>{
+    }else{ // Agregando articulo
+      console.log(fields.productPicture[0]);
+        await Axios.post('http://localhost:4000/api/articulos', {
+          idCategoria:fields.categoria,
+          nombre:fields.nombre,
+          descripcion:fields.descripcion,
+          precio:fields.precio,
+          stock:fields.stock,
+          productPicture:fields.productPicture[0]
+        }).then((res)=>{
           if(res.statusText === 'OK'){
-            Messages('Articulo registrado');
+            Messages('Articulo agregado');
             history.push('/articulo')
           }
       }).catch((err)=>{
-        console.log(err);
+          alert(err);
       })
     }
 }
@@ -119,7 +142,7 @@ if(idEditing !== undefined){
           <div className="card-body">
             <div className="row justify-content-center">
               <div className="col-md-12 mx-auto">
-                <form onSubmit={handleSubmit(onSubmit)}>
+                <form onSubmit={handleSubmit(onSubmit)} encType="multipart/form-data">
                 <div className="form-row">
                   <div className="form-group col-md-12">
                     <label htmlFor="nombre">Nombre:</label>
@@ -128,11 +151,29 @@ if(idEditing !== undefined){
                     {errors.nombre && errors.nombre.type === "pattern" && <span className="ml-2 text-danger">*Solo se permiten letras</span> }
 
                   </div>
-                  <div className="form-group col-md-12">
+                  <div className="form-group col-md-6">
                     <label htmlFor="nombre">Descripción:</label>
                     <textarea type="text" className="form-control campoObligatorio" name="descripcion" id="descripcion" ref={register({required: true })} placeholder="Ingrese el descripcion del articulo" > </textarea>
                     {errors.descripcion && errors.descripcion.type === "required" && <span className="ml-2 text-danger">*Campo obligatorio</span>}
+                  
                   </div>
+                      <div className="form-group col-md-6">
+                         <div className="col-md-6 ml-5">
+                            <div className="file-field">
+                              <div className="mb-4">
+                                <img src="/img/icons/product.png"
+                                  className="rounded-circle z-depth-1-half avatar-pic" id="blah" alt="example placeholder avatar" />
+                              </div>
+                              <div className="d-flex justify-content-center">
+                                <div className="btn btn-mdb-color btn-round btn-primary btn-rounded float-left">
+                                  <span>Agregar foto del producto</span>
+                                  <input type="file" name="productPicture" id="productPicture" ref={register({required: true })}/>
+                                    {errors.productPicture && errors.productPicture.type === "required" && Messages('Ingrese una imagen para el producto')}
+                                </div>
+                              </div>
+                            </div>
+                        </div>
+                    </div>
                   <div className="form-group col-md-6">
                     <label htmlFor="stock">Stock:</label>
                     <input type="text" maxLength="2" className="form-control campoObligatorio" name="stock" id="stock" ref={register({ required: true, pattern:/^[+]?([1-9][0-9]*(?:[\.][0-9]*)?|0*\.0*[1-9][0-9]*)(?:[eE][+-][0-9]+)?$/ })} placeholder="Ingrese el stock disponible" />

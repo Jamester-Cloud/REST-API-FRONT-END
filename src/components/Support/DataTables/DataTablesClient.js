@@ -31,10 +31,10 @@ export default class DataTablesClient extends Component {
 
     async getTicketsCliente(){
         this.setState({loading:true});
-        await axios.post('http://localhost:4000/api/store/getTicketClient', {cancelToken: this.signal.token}, 
+        await axios.post('http://localhost:4000/api/store/getTicketClient', 
         {
             idCliente:parseInt(sessionStorage.getItem('Cliente'))
-        }).then(res=>{
+        }, {cancelToken: this.signal.token}).then(res=>{
             if(res.statusText === "OK"){
                 this.setState({
                     ticketsSoporteCliente:res.data,
@@ -48,11 +48,11 @@ export default class DataTablesClient extends Component {
     }
 
     async completeTicket(id,feedback){
-        await axios.put('http://localhost:4000/api/store/getTicketClient', {cancelToken: this.signal.token}, 
+        await axios.put('http://localhost:4000/api/store/getTicketClient', 
         {
             idCliente:id,
             feedback:feedback
-        }).then(res=>{
+        }, {cancelToken: this.signal.token}).then(res=>{
             if(res.statusText === "OK"){
                 this.Messages('Ticket completado exitosamente. Lamentamos los inconvenientes')
                 
@@ -60,7 +60,6 @@ export default class DataTablesClient extends Component {
         }).catch(err=>{
             this.setState({loading:false, error:err });
         })
-
     }
 
     componentDidMount(){

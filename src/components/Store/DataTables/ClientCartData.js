@@ -29,9 +29,9 @@ export default class ClientCartData extends Component {
         this.setState({
             loading:true,error:null
         })
-        await axios.post('http://localhost:4000/api/store/getCart', {cancelToken: this.signal.token},
+        await axios.post('http://localhost:4000/api/store/getCart',
             {idCliente:parseInt(sessionStorage.getItem('Cliente'))
-        }).then(res=>{
+        }, {cancelToken: this.signal.token}).then(res=>{
             if(res.data !== [] && res.statusText === "OK"  ){
                 this.setState({
                     Carrito:res.data,
