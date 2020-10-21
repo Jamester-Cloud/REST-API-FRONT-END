@@ -1,17 +1,17 @@
 
 /* eslint-disable */
 
-import React, { useState, useEffect}from "react";
+import React, { useState, useEffect, useMemo}from "react";
 import { useForm } from "react-hook-form";
 import Axios from 'axios';
 import Complements from '../../complementary/Complements';
 import { useHistory } from "react-router-dom";
 import $ from 'jquery';
-
+import * as Yup from "yup";
 
 export default function FormArticulo(props){
+  //probar otra libreria
 
-  const { register, handleSubmit, errors } = useForm();
   let history = useHistory();
   let Edit = false;
   let idEditing = props.match.params.id;
@@ -47,7 +47,7 @@ export default function FormArticulo(props){
       }
     } 
 
-    $("#productPicture").change(function() {
+    $("#picture").change(function() {
       readURL(this);
     });
 
@@ -60,11 +60,13 @@ if(idEditing !== undefined){
   Axios.post('http://localhost:4000/api/articulos/getArt',{
     idArticulo:idEditing
   }).then((res)=>{
+
+    //Carga de datos
      const nombre =  document.getElementById('nombre')
      nombre.value = res.data[0].nombre;
 
      const descripcion =  document.getElementById('descripcion')
-     descripcion.defaultValue = res.data[0].descripcion;
+     descripcion.value = res.data[0].descripcion;
 
      const precio =  document.getElementById('precio')
      precio.value = res.data[0].precio;
@@ -73,7 +75,7 @@ if(idEditing !== undefined){
      stock.value = res.data[0].stock;
      //Carga de los selects
      const categoria =  document.getElementById('categoria')
-     let ca = categoria.options
+     let ca = categoria.options;
     
       for (let i = 1; i < ca.length; i++) {
         if(ca[i].innerText === res.data[0].categoria){
@@ -84,54 +86,99 @@ if(idEditing !== undefined){
       Edit=true;
   })
 }
-  
-  
 
-
-  const onSubmit = async fields =>{ 
-    if(Edit){
-      console.log(fields.categoria);
-      // Envio de informacion para editar
-      await Axios.put('http://localhost:4000/api/articulos',{
-        idArticulo:props.match.params.id,
-        idCategoria:fields.categoria,
-        nombre:fields.nombre,
-        descripcion:fields.descripcion,
-        precio:fields.precio,
-        stock:fields.stock
-      }).then((res)=>{
-          if(res.statusText === 'OK'){
-            Messages('Articulo Modificado');
-            history.push('/articulo')
-          }
-      }).catch((err)=>{
-          alert(err);
+/// adding a schme validation using yup (Not working. I must fix it in another project (app)
+// UPDATE: fix it...now just the image validation works. so i need to fix all the other fields in order to validate the rest of the form
+// and not just the file input for the article picture
+  const schema = Yup.object().shape({
+    nombre:Yup
+     .string()
+     .required('Campo obligatorio'),
+     descripcion:Yup
+      .string()
+      .required('Campo obligatorio'),
+    picture:Yup
+        .mixed()
+        .required("You need to provide a file")
+        .test("fileSize", "The file is too large", (value) => {
+        return value && value[0].size <= 20000000;
       })
+      .test("type", "We only support jpeg", (value) => {
+        return value && value[0].type === "image/jpeg";
+      }),
+     stock:Yup
+      .number()
+      .positive()
+      .typeError('Ingrese solo numeros positivos')
+      .min(2, 'Minimo 2 caracteres')
+      .required('Campo obligatorio'),
+     precio:Yup
+      .number()
+      .required('Campo obligatorio')
+      .typeError('Ingrese solo numeros positivos')
+      .min(6, 'Minimo 6 caracteres'),
+     categoria:Yup
+      .string()
+      .required('Campo obligatorio'),
+         
+});
+
+  const { register, handleSubmit, errors } = useForm({
+    validationSchema: schema,
+  });
+
+  const onSubmit = async (fields) => {
+        if(Edit){ // editando el articulo
+          var formData = new FormData();
+          var imagefile = fields.picture[0];
+
+          formData.append("image", imagefile);
+          formData.append("idCategoria", fields.categoria);
+          formData.append("nombre", fields.nombre);
+          formData.append("descripcion", fields.descripcion);
+          formData.append("precio", fields.precio);
+          formData.append("stock", fields.stock);
+          // id para la edicion
+          formData.append('idArticulo', props.match.params.id);
+          // Envio de informacion para editar
+          await Axios.put('http://localhost:4000/api/articulos',formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      }).then((res)=>{
+              if(res.statusText === 'OK'){
+                Messages('Articulo Modificado');
+                window.location.href='/articulo';
+              }
+          }).catch((err)=>{
+              alert(err);
+          })
     }else{ // Agregando articulo
-      console.log(fields.productPicture[0]);
-        await Axios.post('http://localhost:4000/api/articulos', {
-          idCategoria:fields.categoria,
-          nombre:fields.nombre,
-          descripcion:fields.descripcion,
-          precio:fields.precio,
-          stock:fields.stock,
-          productPicture:fields.productPicture[0]
-        }).then((res)=>{
+      var formData = new FormData();
+      var imagefile = fields.picture[0];
+
+      formData.append("image", imagefile);
+      formData.append("idCategoria", fields.categoria);
+      formData.append("nombre", fields.nombre);
+      formData.append("descripcion", fields.descripcion);
+      formData.append("precio", fields.precio);
+      formData.append("stock", fields.stock);
+
+      await Axios.post('http://localhost:4000/api/articulos', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      })
+      .then((res)=>{
           if(res.statusText === 'OK'){
             Messages('Articulo agregado');
-            history.push('/articulo')
+            window.location.href='/articulo';
           }
       }).catch((err)=>{
           alert(err);
       })
     }
-}
-
-
-
-
-
-
+  };
   return (
       <div className="content mt-5">
         <div className="card">
@@ -146,19 +193,16 @@ if(idEditing !== undefined){
                 <div className="form-row">
                   <div className="form-group col-md-12">
                     <label htmlFor="nombre">Nombre:</label>
-                    <input type="text" className="form-control campoObligatorio" name="nombre" id="nombre" ref={register({ pattern: /^[A-Za-z0-9\s]+$/g , required: true })} placeholder="Ingrese el nombre del articulo" />
-                    {errors.nombre && errors.nombre.type === "required" && <span className="ml-2 text-danger">*Campo obligatorio</span>}
-                    {errors.nombre && errors.nombre.type === "pattern" && <span className="ml-2 text-danger">*Solo se permiten letras</span> }
-
+                    <input type="text" className="form-control campoObligatorio" name="nombre" id="nombre"  ref={register} placeholder="Ingrese el nombre del articulo" />
+                      {errors.nombre &&  <span className="ml-2 text-danger">{errors.nombre.message}</span>}
                   </div>
-                  <div className="form-group col-md-6">
+                  <div className="form-group col-md-12">
                     <label htmlFor="nombre">Descripción:</label>
-                    <textarea type="text" className="form-control campoObligatorio" name="descripcion" id="descripcion" ref={register({required: true })} placeholder="Ingrese el descripcion del articulo" > </textarea>
-                    {errors.descripcion && errors.descripcion.type === "required" && <span className="ml-2 text-danger">*Campo obligatorio</span>}
-                  
+                    <textarea type="text" className="form-control campoObligatorio" defaultValue="" name="descripcion" id="descripcion" ref={register} placeholder="Ingrese el descripcion del articulo" ></textarea>
+                    {errors.descripcion && <span className="ml-2 text-danger">{errors.descripcion.message}</span>}
                   </div>
-                      <div className="form-group col-md-6">
-                         <div className="col-md-6 ml-5">
+                      <div className="form-group text-center col-md-12">
+                         <div className="col-md-12">
                             <div className="file-field">
                               <div className="mb-4">
                                 <img src="/img/icons/product.png"
@@ -167,26 +211,22 @@ if(idEditing !== undefined){
                               <div className="d-flex justify-content-center">
                                 <div className="btn btn-mdb-color btn-round btn-primary btn-rounded float-left">
                                   <span>Agregar foto del producto</span>
-                                  <input type="file" name="productPicture" id="productPicture" ref={register({required: true })}/>
-                                    {errors.productPicture && errors.productPicture.type === "required" && Messages('Ingrese una imagen para el producto')}
+                                  <input type="file" name="picture" id="picture" ref={register}/>
                                 </div>
                               </div>
                             </div>
+                            {errors.picture &&  <span className="ml-2 text-danger">{errors.picture.message}</span>}
                         </div>
                     </div>
                   <div className="form-group col-md-6">
                     <label htmlFor="stock">Stock:</label>
                     <input type="text" maxLength="2" className="form-control campoObligatorio" name="stock" id="stock" ref={register({ required: true, pattern:/^[+]?([1-9][0-9]*(?:[\.][0-9]*)?|0*\.0*[1-9][0-9]*)(?:[eE][+-][0-9]+)?$/ })} placeholder="Ingrese el stock disponible" />
-                    {errors.stock && errors.stock.type === "required" && <span className="ml-2 text-danger">*Campo obligatorio</span>}
-                    {errors.stock && errors.stock.type === "pattern" && <span className="ml-2 text-danger">*Solo se permiten numeros entero positivos</span> }
-
+                      {errors.stock &&  <span className="ml-2 text-danger">{errors.stock.message}</span>}
                   </div>
                   <div className="form-group col-md-6">
                     <label htmlFor="precio">Precio:</label>
                     <input type="text" className="form-control campoObligatorio" name="precio" id="precio" ref={register({ required: true, pattern:/^[+]?([1-9][0-9]*(?:[\.][0-9]*)?|0*\.0*[1-9][0-9]*)(?:[eE][+-][0-9]+)?$/ })} placeholder="Ingrese el precio actual del articulo" />
-                    {errors.precio && errors.precio.type === "required" && <span className="ml-2 text-danger">*Campo obligatorio</span>}
-                    {errors.precio && errors.precio.type === "pattern" && <span className="ml-2 text-danger">*Solo se permiten numeros entero positivos</span> }
-
+                    {errors.precio && <span className="ml-2 text-danger">{errors.precio.message}</span>}
                   </div>
                   <div className="form-group col-md-12">
                     <label htmlFor="categoria">Categoria:</label>

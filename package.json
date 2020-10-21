@@ -16,12 +16,13 @@
     "jquery-validation": "^1.19.2",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
-    "react-hook-form": "^6.8.2",
+    "react-hook-form": "4.9.8",
     "react-router-dom": "^5.2.0",
-    "react-scripts": "3.4.3",
+    "react-scripts": "^3.4.3",
     "redux": "^4.0.5",
     "sweetalert2": "^9.17.2",
-    "timeago.js": "^4.0.2"
+    "timeago.js": "^4.0.2",
+    "yup": "^0.29.3"
   },
   "scripts": {
     "start": "react-scripts start",

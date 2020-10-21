@@ -12,10 +12,7 @@ export default function Complements(M) {
           toast.addEventListener('mouseenter', Swal.stopTimer)
           toast.addEventListener('mouseleave', Swal.resumeTimer)
         },
-        backdrop: `
-          rgba(0,0,128,0.4)
-        `,
-          html:
+        html:
           '<img src="img/nyan-cat.gif" width="70" height="50">',
       })
       Toasted.fire(M);

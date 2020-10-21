@@ -13,6 +13,7 @@ import $ from 'jquery';
 import Tippy from '@tippyjs/react';
 
 export default class DataTable extends Component {
+    // cancelacion de subscripciones
    signal = axios.CancelToken.source();
     // state del componente
     state={

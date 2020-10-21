@@ -25,7 +25,6 @@ export default function CreateUser() {
             Axios.post('http://localhost:4000/api/usuarios/checkUser', {
                 username:inputText
             }).then(res=>{
-                console.log(res.data)
                 if(res.statusText==="OK"){
                     if(res.data.length === 0){
                         // si no se encuentra ningun registro
@@ -45,7 +44,6 @@ export default function CreateUser() {
 
     //Funcion de envio de informacion
     const onSubmit = async data =>{ 
-        console.log(data);
         // Envio de informacion para editar
         await Axios.post('http://localhost:4000/api/authentications/signup',{
            //persona data

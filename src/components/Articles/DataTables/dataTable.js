@@ -80,7 +80,9 @@ export default class dataTable extends Component {
       this.Messages('Articulo Eliminado');
       this.refrescarTabla()
     }
+    
     render() {
+
         if(this.state.loading === true){
             return (
                 <div className="row justify-content-center fadeIn">
@@ -99,7 +101,7 @@ export default class dataTable extends Component {
                       </div>
               </div> 
           );
-      }
+        }
         return (
             <div className="card-body">
               <div className="tab-content text-left">

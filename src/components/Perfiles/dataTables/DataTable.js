@@ -27,20 +27,20 @@ export default class DataTable extends Component {
     perfiles:[] // -> Data State
   }
 
-    // Categorias a elejir en el select
-    async getPerfiles(){
-        this.setState({
-            loading:true , error:null
-        })
-        await axios.get('http://localhost:4000/api/perfil', {cancelToken: this.signal.token})
-        .then(res=>{
-            this.setState({perfiles:res.data, loading:false });
-            $("#producto").DataTable();
-        
-        }).catch(err=>{
-            this.setState({loading:false, error:err });
-        })
-    }
+  // Categorias a elejir en el select
+  async getPerfiles(){
+      this.setState({
+          loading:true , error:null
+      })
+      await axios.get('http://localhost:4000/api/perfil', {cancelToken: this.signal.token})
+      .then(res=>{
+          this.setState({perfiles:res.data, loading:false });
+          $("#producto").DataTable();
+      
+      }).catch(err=>{
+          this.setState({loading:false, error:err });
+      })
+  }
 
     // cuando se monte el componente
     componentDidMount(){
