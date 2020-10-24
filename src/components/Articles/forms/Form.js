@@ -26,7 +26,7 @@ export default function FormArticulo(props){
     // Carga de categorias para el select
     const fetchDataCategories = async () => {
       const result = await Axios.get(
-        'http://localhost:4000/api/categorias',
+        'https://bakery-backend.herokuapp.com/api/categorias',
       );
  
       setData(result.data);
@@ -57,7 +57,7 @@ export default function FormArticulo(props){
   }, []);
 // carga de los campos en caso de edicion
 if(idEditing !== undefined){
-  Axios.post('http://localhost:4000/api/articulos/getArt',{
+  Axios.post('https://bakery-backend.herokuapp.com/api/articulos/getArt',{
     idArticulo:idEditing
   }).then((res)=>{
 
@@ -141,7 +141,7 @@ if(idEditing !== undefined){
           // id para la edicion
           formData.append('idArticulo', props.match.params.id);
           // Envio de informacion para editar
-          await Axios.put('http://localhost:4000/api/articulos',formData, {
+          await Axios.put('https://bakery-backend.herokuapp.com/api/articulos',formData, {
         headers: {
           'Content-Type': 'multipart/form-data'
         }
@@ -164,7 +164,7 @@ if(idEditing !== undefined){
       formData.append("precio", fields.precio);
       formData.append("stock", fields.stock);
 
-      await Axios.post('http://localhost:4000/api/articulos', formData, {
+      await Axios.post('https://bakery-backend.herokuapp.com/api/articulos', formData, {
         headers: {
           'Content-Type': 'multipart/form-data'
         }

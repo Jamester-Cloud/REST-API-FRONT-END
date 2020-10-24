@@ -49,7 +49,7 @@ export default class dataTable extends Component {
    }
    //Obteniendo Articulos
    async getArticulos(){
-      await axios.get('http://localhost:4000/api/articulos', {cancelToken: this.signal.token}).then(res=>{
+      await axios.get('https://bakery-backend.herokuapp.com/api/articulos', {cancelToken: this.signal.token}).then(res=>{
           this.setState({articles:res.data, loading:false });
           $("#producto").DataTable();
       }).catch(err=>{
@@ -74,7 +74,7 @@ export default class dataTable extends Component {
     }
 
     deleteArt = async(id) =>{
-      await axios.delete('http://localhost:4000/api/articulos', {data:{idArticulo:id}}, {cancelToken: this.signal.token}).catch(err=>{
+      await axios.delete('https://bakery-backend.herokuapp.com/api/articulos', {data:{idArticulo:id}}, {cancelToken: this.signal.token}).catch(err=>{
         this.setState({error:err , loading:false });
       })
       this.Messages('Articulo Eliminado');

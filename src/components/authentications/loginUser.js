@@ -26,7 +26,7 @@ export default class loginUser extends Component {
         const { username, pass } = this.state;
         this.setState({ error: false });
 
-        axios.post('http://localhost:4000/api/authentications/signin',{
+        axios.post('https://bakery-backend.herokuapp.com/api/authentications/signin',{
             username:username,
             pass:pass
         }).then((res)=>{

@@ -21,7 +21,7 @@ export default function EditCategories(props) {
    useEffect(() => {
     // Carga de categorias para el select
     const fetchDataUsuario = async () => {
-      await Axios.post('http://localhost:4000/api/usuarios/getUser',{
+      await Axios.post('https://bakery-backend.herokuapp.com/api/usuarios/getUser',{
         idUsuario:idEditing
       }).then((res)=>{
           console.log(res);
@@ -52,7 +52,7 @@ export default function EditCategories(props) {
 
   const onSubmit = async data =>{ 
       // Envio de informacion para editar
-    await  Axios.put('http://localhost:4000/api/usuarios',{
+    await  Axios.put('https://bakery-backend.herokuapp.com/api/usuarios',{
         idUsuario:props.match.params.id,
         username:data.username,
         nombrePersona:data.nombrePersona,

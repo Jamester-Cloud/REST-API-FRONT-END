@@ -15,7 +15,7 @@ export default class navigationAdmin extends Component {
 
 
    async logout(){
-       await axios.get('http://localhost:4000/api/authentications/logout')
+       await axios.get('https://bakery-backend.herokuapp.com/api/authentications/logout')
         .then((res)=>{
             if(res.statusText === "OK"){
                 // eliminando informacion de la session
