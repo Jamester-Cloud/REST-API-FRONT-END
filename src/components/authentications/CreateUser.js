@@ -22,7 +22,7 @@ export default function CreateUser() {
             //Agregando al div y quitando espacios en blanco
             document.querySelector(".Texto").innerHTML = inputText.trim();
             // iniciando comprobacion del usuario
-            Axios.post('http://localhost:4000/api/usuarios/checkUser', {
+            Axios.post('https://bakery-backend.herokuapp.com/api/usuarios/checkUser', {
                 username:inputText
             }).then(res=>{
                 if(res.statusText==="OK"){
@@ -45,7 +45,7 @@ export default function CreateUser() {
     //Funcion de envio de informacion
     const onSubmit = async data =>{ 
         // Envio de informacion para editar
-        await Axios.post('http://localhost:4000/api/authentications/signup',{
+        await Axios.post('https://bakery-backend.herokuapp.com/api/authentications/signup',{
            //persona data
            nombrePersona:data.nombrePersona,
            apellidoPersona:data.apellidoPersona,
