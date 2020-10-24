@@ -25,7 +25,7 @@ export default class ClientDashboard extends Component {
     let idCliente = sessionStorage.getItem("Cliente");
     let username  = sessionStorage.getItem("Username");
 
-    const res = await axios.post('http://localhost:4000/api/usuarios/admin', {
+    const res = await axios.post('https://bakery-backend.herokuapp.com/api/usuarios/admin', {
       idCliente:idCliente,
       username:username
     }, {cancelToken: this.signal.token})

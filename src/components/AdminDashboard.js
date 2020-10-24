@@ -22,7 +22,7 @@ export default class AdminDashboard extends Component {
   async getInfo(){
 
     let currentAdminUser =  sessionStorage.getItem('Username');
-    const res = await axios.post('http://localhost:4000/api/usuarios/admin',{username:currentAdminUser}, {cancelToken: this.signal.token});
+    const res = await axios.post('https://bakery-backend.herokuapp.com/api/usuarios/admin',{username:currentAdminUser}, {cancelToken: this.signal.token});
     
     this.setState({
       //clientes
