@@ -19,7 +19,7 @@ export default function Form(props) {
   const onSubmit = async data =>{ 
     if(Edit){
       // Envio de informacion para editar
-    await  Axios.put('http://localhost:4000/api/perfil',{
+    await  Axios.put('https://bakery-backend.herokuapp.com/api/perfil',{
         idPerfil:props.match.params.id,
         perfil:data.perfil
       }).then((res)=>{
@@ -32,7 +32,7 @@ export default function Form(props) {
       })
     }else{
       // Envio de informacion para registrar
-      Axios.post('http://localhost:4000/api/perfil',{
+      Axios.post('https://bakery-backend.herokuapp.com/api/perfil',{
         perfil:data.perfil
       }).then((res)=>{
           if(res.statusText === 'OK'){
@@ -46,7 +46,7 @@ export default function Form(props) {
 }
 
   
-  Axios.post('http://localhost:4000/api/perfil/getPerfil',{
+  Axios.post('https://bakery-backend.herokuapp.com/api/perfil/getPerfil',{
     idPerfil:idEditing
   }).then((res)=>{
     if(idEditing!==undefined){

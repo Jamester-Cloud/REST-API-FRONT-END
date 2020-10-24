@@ -27,7 +27,7 @@ export default class DataTable extends Component {
         this.setState({
             loading:true , error:null
         })
-        await axios.get('http://localhost:4000/api/clientes', {cancelToken: this.signal.token})
+        await axios.get('https://bakery-backend.herokuapp.com/api/clientes', {cancelToken: this.signal.token})
         .then(res=>{
             this.setState({Clientes:res.data, loading:false });
             $("#producto").DataTable();
@@ -41,19 +41,19 @@ export default class DataTable extends Component {
 
     }
 
-      componentDidMount(){
-          this.getClientes();
-          this.destroyDataTables=refreshFunction.bind();
-      }
-      ///Cuando se desmonte el componente
-      componentWillUnmount() {
-        this.signal.cancel('Api is being canceled');
-      }
+  componentDidMount(){
+      this.getClientes();
+      this.destroyDataTables=refreshFunction.bind();
+  }
+  ///Cuando se desmonte el componente
+  componentWillUnmount() {
+    this.signal.cancel('Api is being canceled');
+  }
 
-      refresh(){
-          this.destroyDataTables();
-          this.getClientes();
-      }
+  refresh(){
+      this.destroyDataTables();
+      this.getClientes();
+  }
 
     render() {
         if(this.state.loading === true){

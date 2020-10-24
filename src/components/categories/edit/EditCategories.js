@@ -17,7 +17,7 @@ export default function EditCategories(props) {
   const onSubmit = async data =>{ 
     if(Edit){
       // Envio de informacion para editar
-    await  Axios.put('http://localhost:4000/api/categorias',{
+    await  Axios.put('https://bakery-backend.herokuapp.com/api/categorias',{
         idCategoria:props.match.params.id,
         categoria:data.categoria
       }).then((res)=>{
@@ -30,7 +30,7 @@ export default function EditCategories(props) {
       })
     }else{
       // Envio de informacion para registrar
-      Axios.post('http://localhost:4000/api/categorias',{
+      Axios.post('https://bakery-backend.herokuapp.com/api/categorias',{
         categoria:data.categoria
       }).then((res)=>{
           if(res.statusText === 'OK'){
@@ -44,7 +44,7 @@ export default function EditCategories(props) {
 }
 
   
-  Axios.post('http://localhost:4000/api/categorias/getCategoria',{
+  Axios.post('https://bakery-backend.herokuapp.com/api/categorias/getCategoria',{
      idCategoria:idEditing
   }).then((res)=>{
     if(idEditing!==undefined){

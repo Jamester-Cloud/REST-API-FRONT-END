@@ -49,7 +49,7 @@ export default class CartData extends Component {
 	/// Add to cart function
 	onSubmit=e=>{
 		e.preventDefault(); // Quitando el comportamiento del formulario
-		axios.put('http://localhost:4000/api/store', {
+		axios.put('https://bakery-backend.herokuapp.com/api/store', {
 			idArticulo:this.state.idArticulo,
 			idCliente:this.state.idCliente,
 			stock:this.state.stock,
@@ -75,7 +75,7 @@ export default class CartData extends Component {
     }
 
     async getData(){   
-        await axios.post('http://localhost:4000/api/articulos/getArt',{
+        await axios.post('https://bakery-backend.herokuapp.com/api/articulos/getArt',{
             idArticulo:this.props.id
           }, {cancelToken: this.signal.token})
         .then(res=>{

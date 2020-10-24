@@ -23,7 +23,7 @@ export default class DataTable extends Component {
     // Categorias a elejir en el select
     async getCategorias(){
       this.setState({loading:true});
-      await axios.get('http://localhost:4000/api/categorias', {cancelToken: this.signal.token}).then(res=>{
+      await axios.get('https://bakery-backend.herokuapp.com/api/categorias', {cancelToken: this.signal.token}).then(res=>{
           this.setState({categorias:res.data.categorias , loading:false});
           $("#producto").DataTable();
       }).catch(err=>{

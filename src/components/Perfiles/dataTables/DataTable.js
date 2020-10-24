@@ -32,7 +32,7 @@ export default class DataTable extends Component {
       this.setState({
           loading:true , error:null
       })
-      await axios.get('http://localhost:4000/api/perfil', {cancelToken: this.signal.token})
+      await axios.get('https://bakery-backend.herokuapp.com/api/perfil', {cancelToken: this.signal.token})
       .then(res=>{
           this.setState({perfiles:res.data, loading:false });
           $("#producto").DataTable();
@@ -59,7 +59,7 @@ export default class DataTable extends Component {
     }
 
     deleteCrt = async(id) =>{
-      await axios.delete('http://localhost:4000/api/perfil', {data:{idPerfil:id}}, {cancelToken: this.signal.token,})
+      await axios.delete('https://bakery-backend.herokuapp.com/api/perfil', {data:{idPerfil:id}}, {cancelToken: this.signal.token,})
       .catch(err=>{
         this.setState({loading:false, error:err });
       });

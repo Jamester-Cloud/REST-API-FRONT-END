@@ -17,7 +17,7 @@ export default function Form(props) {
     let history = useHistory();
 
     const onSubmit=async data=>{
-        Axios.post('http://localhost:4000/api/store',{
+        Axios.post('https://bakery-backend.herokuapp.com/api/store',{
             idCliente:parseInt(sessionStorage.getItem('Cliente')),
             descripcion:data.descripcion,
             fechaEntrega:data.fechaEntrega,

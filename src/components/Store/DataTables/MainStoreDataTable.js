@@ -32,7 +32,7 @@ class MainStoreDataTable extends React.Component {
   }
   // Obtiene los detalles del articulo
   async ArtDetails(id){
-    await axios.post('http://localhost:4000/api/articulos/getArt',{
+    await axios.post('https://bakery-backend.herokuapp.com/api/articulos/getArt',{
       idArticulo:id
     }, {cancelToken: this.signal.token}).then(res=>{
       this.setState({
@@ -53,7 +53,7 @@ class MainStoreDataTable extends React.Component {
     this.setState({
       loading: true, error: null
     })
-    await axios.get('http://localhost:4000/api/articulos', {cancelToken: this.signal.token})
+    await axios.get('https://bakery-backend.herokuapp.com/api/articulos', {cancelToken: this.signal.token})
       .then(res => {
         this.setState({
           articulos: res.data,

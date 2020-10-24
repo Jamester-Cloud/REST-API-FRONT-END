@@ -22,7 +22,7 @@ export default class DataTables extends Component {
       // Categorias a elejir en el select
       async getTickets(){
         this.setState({loading:true});
-        await axios.get('http://localhost:4000/api/store/supportTicket', {cancelToken: this.signal.token})
+        await axios.get('https://bakery-backend.herokuapp.com/api/store/supportTicket', {cancelToken: this.signal.token})
         .then(res=>{
             this.setState({
                 ticketsIncompletos:res.data.Imcompletos,
@@ -58,7 +58,7 @@ export default class DataTables extends Component {
       }
   
       deleteTicket = async (id) =>{
-        await axios.delete('http://localhost:4000/api/store/supportTicket', {data:{idTicketSoporte:id}}, {cancelToken: this.signal.token}).catch(err=>{
+        await axios.delete('https://bakery-backend.herokuapp.com/api/store/supportTicket', {data:{idTicketSoporte:id}}, {cancelToken: this.signal.token}).catch(err=>{
           this.setState({loading:false, error:err });
         })
         this.Messages('Ticket eliminado');
@@ -66,7 +66,7 @@ export default class DataTables extends Component {
       }
   
       denyTicket = async (id) =>{
-        await axios.put('http://localhost:4000/api/store/supportTicket', {idTicketSoporte:id}, {cancelToken: this.signal.token})
+        await axios.put('https://bakery-backend.herokuapp.com/api/store/supportTicket', {idTicketSoporte:id}, {cancelToken: this.signal.token})
         .catch(err=>{
           this.setState({loading:false, error:err });
       })

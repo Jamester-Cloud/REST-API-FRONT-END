@@ -141,7 +141,7 @@ export default class Problem extends Component {
         e.preventDefault();
         // se envia una informacion general con los checkbox
           if($("#inputOtro").val() === "" ){
-            axios.post("http://localhost:4000/api/store/supportTicket",{
+            axios.post("https://bakery-backend.herokuapp.com/api/store/supportTicket",{
               idFactura:this.props.match.params.id,
               tituloTicketSoporte:this.state.tituloTicketSoporte,
               descripcionTicketSoporte:this.state.descripcion,
@@ -156,7 +156,7 @@ export default class Problem extends Component {
   
           // se envia una informacion general con el input en caso de ser otra la causa
           }else{
-            axios.post("http://localhost:4000/api/store/supportTicket",{
+            axios.post("https://bakery-backend.herokuapp.com/api/store/supportTicket",{
               idFactura:this.props.match.params.id,
               tituloTicketSoporte:this.state.tituloTicketSoporte,
               descripcionTicketSoporte:this.state.descripcion,

@@ -35,7 +35,7 @@ export default class OrdersDataTables extends Component {
           loading:true , error:null
       })
           
-      await axios.post('http://localhost:4000/api/store/getPedidos',
+      await axios.post('https://bakery-backend.herokuapp.com/api/store/getPedidos',
               {idCliente:sessionStorage.getItem('Cliente')}, {cancelToken: this.signal.token}
       ).then(res=>{
           if(res.statusText==="OK"){
@@ -67,7 +67,7 @@ export default class OrdersDataTables extends Component {
     }
 
     async denyOrder(id){
-        await axios.put("http://localhost:4000/api/store/orderChange", {cancelToken: this.signal.token},
+        await axios.put("https://bakery-backend.herokuapp.com/api/store/orderChange", {cancelToken: this.signal.token},
         {
             idPedido:id
         }).then(res=>{
@@ -89,7 +89,7 @@ export default class OrdersDataTables extends Component {
     }
 
     async changeOrder(id){
-        await axios.post("http://localhost:4000/api/store/orderChange", {cancelToken: this.signal.token},
+        await axios.post("https://bakery-backend.herokuapp.com/api/store/orderChange", {cancelToken: this.signal.token},
         {
             idPedido:id
         }).then(res=>{

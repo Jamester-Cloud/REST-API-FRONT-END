@@ -29,7 +29,7 @@ export default class ClientCartData extends Component {
         this.setState({
             loading:true,error:null
         })
-        await axios.post('http://localhost:4000/api/store/getCart',
+        await axios.post('https://bakery-backend.herokuapp.com/api/store/getCart',
             {idCliente:parseInt(sessionStorage.getItem('Cliente'))
         }, {cancelToken: this.signal.token}).then(res=>{
             if(res.data !== [] && res.statusText === "OK"  ){
@@ -74,7 +74,7 @@ export default class ClientCartData extends Component {
     
 
     async devolver(id){
-        await axios.delete('http://localhost:4000/api/store', {cancelToken: this.signal.token},
+        await axios.delete('https://bakery-backend.herokuapp.com/api/store', {cancelToken: this.signal.token},
         {
             data:{
                 idListaArticulos:id

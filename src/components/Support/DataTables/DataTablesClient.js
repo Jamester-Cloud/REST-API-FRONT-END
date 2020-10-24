@@ -31,7 +31,7 @@ export default class DataTablesClient extends Component {
 
     async getTicketsCliente(){
         this.setState({loading:true});
-        await axios.post('http://localhost:4000/api/store/getTicketClient', 
+        await axios.post('https://bakery-backend.herokuapp.com/api/store/getTicketClient', 
         {
             idCliente:parseInt(sessionStorage.getItem('Cliente'))
         }, {cancelToken: this.signal.token}).then(res=>{
@@ -48,7 +48,7 @@ export default class DataTablesClient extends Component {
     }
 
     async completeTicket(id,feedback){
-        await axios.put('http://localhost:4000/api/store/getTicketClient', 
+        await axios.put('https://bakery-backend.herokuapp.com/api/store/getTicketClient', 
         {
             idCliente:id,
             feedback:feedback
