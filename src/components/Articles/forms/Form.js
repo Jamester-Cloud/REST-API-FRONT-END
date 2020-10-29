@@ -97,15 +97,6 @@ if(idEditing !== undefined){
      descripcion:Yup
       .string()
       .required('Campo obligatorio'),
-    picture:Yup
-        .mixed()
-        .required("You need to provide a file")
-        .test("fileSize", "The file is too large", (value) => {
-        return value && value[0].size <= 20000000;
-      })
-      .test("type", "We only support jpeg", (value) => {
-        return value && value[0].type === "image/jpeg";
-      }),
      stock:Yup
       .number()
       .positive()
@@ -201,23 +192,7 @@ if(idEditing !== undefined){
                     <textarea type="text" className="form-control campoObligatorio" defaultValue="" name="descripcion" id="descripcion" ref={register} placeholder="Ingrese el descripcion del articulo" ></textarea>
                     {errors.descripcion && <span className="ml-2 text-danger">{errors.descripcion.message}</span>}
                   </div>
-                      <div className="form-group text-center col-md-12">
-                         <div className="col-md-12">
-                            <div className="file-field">
-                              <div className="mb-4">
-                                <img src="/img/icons/product.png"
-                                  className="rounded-circle z-depth-1-half avatar-pic" id="blah" alt="example placeholder avatar" />
-                              </div>
-                              <div className="d-flex justify-content-center">
-                                <div className="btn btn-mdb-color btn-round btn-primary btn-rounded float-left">
-                                  <span>Agregar foto del producto</span>
-                                  <input type="file" name="picture" id="picture" ref={register}/>
-                                </div>
-                              </div>
-                            </div>
-                            {errors.picture &&  <span className="ml-2 text-danger">{errors.picture.message}</span>}
-                        </div>
-                    </div>
+                      
                   <div className="form-group col-md-6">
                     <label htmlFor="stock">Stock:</label>
                     <input type="text" maxLength="2" className="form-control campoObligatorio" name="stock" id="stock" ref={register({ required: true, pattern:/^[+]?([1-9][0-9]*(?:[\.][0-9]*)?|0*\.0*[1-9][0-9]*)(?:[eE][+-][0-9]+)?$/ })} placeholder="Ingrese el stock disponible" />
