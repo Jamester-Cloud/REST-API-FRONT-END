@@ -121,9 +121,7 @@ if(idEditing !== undefined){
   const onSubmit = async (fields) => {
         if(Edit){ // editando el articulo
           var formData = new FormData();
-          var imagefile = fields.picture[0];
 
-          formData.append("image", imagefile);
           formData.append("idCategoria", fields.categoria);
           formData.append("nombre", fields.nombre);
           formData.append("descripcion", fields.descripcion);
@@ -146,9 +144,7 @@ if(idEditing !== undefined){
           })
     }else{ // Agregando articulo
       var formData = new FormData();
-      var imagefile = fields.picture[0];
 
-      formData.append("image", imagefile);
       formData.append("idCategoria", fields.categoria);
       formData.append("nombre", fields.nombre);
       formData.append("descripcion", fields.descripcion);
