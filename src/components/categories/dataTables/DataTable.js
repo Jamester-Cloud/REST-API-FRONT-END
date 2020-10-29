@@ -47,11 +47,13 @@ export default class DataTable extends Component {
 
     deleteCrt = async(id) =>{
 
-      await axios.delete('http://localhost:4000/api/categorias', {data:{idCategoria:id}}, {cancelToken: this.signal.token}).catch(err=>{
+      await axios.delete('https://bakery-backend.herokuapp.com/api/categorias', {data:{idCategoria:id}}, {cancelToken: this.signal.token}).then(res=>{
+        this.refresh();
+        this.Messages('Categoria Eliminada');
+      }).catch(err=>{
         this.setState({loading:false, error:err });
       })
-      this.refresh();
-      this.Messages('Categoria Eliminada');
+
     }
 
     render() {
